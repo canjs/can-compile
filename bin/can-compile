@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+var program = require('commander');
+var pkg = require('../package.json');
+
+program.version(pkg.version)
+	.usage('[options] <files ...>')
+	.description(pkg.description)
+	.option('-o, --output [name]', 'The output file')
+	.parse(process.argv);

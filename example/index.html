@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View loading example</title>
+</head>
+<body>
+  <div id="content"></div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+  <script type="text/javascript" src="http://canjs.us/release/latest/can.jquery.js"></script>
+  <script type="text/javascript" src="http://canjs.us/release/latest/can.view.mustache.js"></script>
+  <script type="text/javascript" src="views.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      $('#content').append(can.view('view.ejs', { message : 'Hello EJS' }));
+      $('#content').append(can.view('view.mustache', { message : 'Hello Mustache' }));
+    });
+  </script>
+</body>
+</html>

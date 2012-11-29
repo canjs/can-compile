@@ -1,0 +1,24 @@
+{
+  "name": "can-compile",
+  "description": "Compile EJS views",
+  "version": "0.1.0",
+  "homepage": "http://daffl.github.com/can-compile",
+  "author" : {
+    "name" : "David Luecke",
+    "email" : "david@bitovi.com",
+    "web" : "http://bitovi.com"
+  },
+  "main": "lib/compile.js",
+  "engines": {
+    "node": "~0.8"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "git@github.com:daffl/can-compile.git"
+  },
+  "dependencies": {
+    "zombie" : "1.4.1",
+    "minimatch" : "0.2.9",
+    "commander" : "1.1.1"
+  }
+}
