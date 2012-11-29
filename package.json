@@ -8,7 +8,7 @@
     "email" : "david@bitovi.com",
     "web" : "http://bitovi.com"
   },
-  "main": "lib/compile.js",
+  "main": "lib/index.js",
   "engines": {
     "node": "~0.8"
   },
@@ -16,9 +16,13 @@
     "type" : "git",
     "url" : "git@github.com:daffl/can-compile.git"
   },
+  "bin": {
+    "can-compile": "./bin/can-compile"
+  },
+  "keywords": [ "gruntplugin", "canjs" ],
   "dependencies": {
     "zombie" : "1.4.1",
-    "minimatch" : "0.2.9",
+    "glob-whatev" : "0.1.8",
     "commander" : "1.1.1"
   }
 }
