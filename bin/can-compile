@@ -11,6 +11,10 @@ program.version(pkg.version)
 	.parse(process.argv);
 
 var files = [];
+if(!program.args || program.args.length === 0) {
+  program.args = ['**/*.ejs', '**/*.mustache'];
+}
+
 program.args.forEach(function(pattern) {
   files = files.concat(globsync.glob(pattern));
 });
