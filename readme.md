@@ -31,6 +31,7 @@ Write the result to `views.combined.js`:
 ## Grunt task
 
 can-compile also comes with a [Grunt](http://gruntjs.com) task so you can easily make it part of your production build.
+Just `npm install can-compile` in you project folder (or add it as a development dependency).
 The following example shows a Gruntfile that compiles all Mustache views and then builds a concatenated and minified `production.js`
 of a CanJS application:
 
@@ -74,6 +75,8 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.loadNpmTask('can-compile');
+  
   // Default task.
   grunt.registerTask('default', 'cancompile concat min');
 
