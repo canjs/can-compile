@@ -3,6 +3,10 @@
 NodeJS module that compiles CanJS EJS and Mustache views into a single JavaScript file for lightning fast
 production apps.
 
+With NodeJS installed, just run NPM:
+
+> npm install can-compile -g
+
 ## Command line
 
 The `can-compile` command line tool takes a list of files (by default all `*.ejs` and `*.mustache` files in the current folder)
