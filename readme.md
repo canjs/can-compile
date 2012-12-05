@@ -1,6 +1,6 @@
 # can-compile
 
-NodeJS module that compiles CanJS EJS and Mustache views into a single JavaScript file for lightning fast
+NodeJS module that compiles [CanJS](http://canjs.us/) EJS and Mustache views into a single JavaScript file for lightning fast
 production apps.
 
 With NodeJS installed, just run NPM:
