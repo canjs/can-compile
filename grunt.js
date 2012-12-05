@@ -1,37 +1,38 @@
-/*global module:false*/
-module.exports = function (grunt) {
+'use strict';
+
+module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		pkg : '<json:package.json>',
-		meta : {
-			resources : 'resources/js'
+		pkg: '<json:package.json>',
+		lint: {
+			files: ['grunt.js', 'tasks/**/*.js', 'lib/**/*.js', 'test/**/*.js']
 		},
-		concat : {
-			resources : {
-				src : [ '<%= meta.resources %>/jquery.1.8.3.js', '<%= meta.resources %>/can.jquery.1.1.2.js',
-					'<%= meta.resources %>/can.view.mustache.1.1.2.js' ],
-				dest : '<%= meta.resources %>/resources.js'
-			}
+		watch: {
+			files: '<config:lint.files>',
+			tasks: 'default'
 		},
-		min : {
-			resources : {
-				src : '<%= meta.resources %>/resources.js',
-				dest : '<%= meta.resources %>/resources.min.js'
-			}
-		},
-		cancompile : {
-			all : {
-				src : ['**/*.ejs', '**/*.mustache'],
-				// Change into the example folder
-				out : 'example/views.production.js'
+		jshint: {
+			options: {
+				curly: true,
+				eqeqeq: true,
+				immed: true,
+				latedef: true,
+				newcap: true,
+				noarg: true,
+				sub: true,
+				undef: true,
+				boss: true,
+				eqnull: true,
+				node: true
+			},
+			globals: {
+				exports: true
 			}
 		}
 	});
 
-	grunt.loadTasks("./tasks");
 	// Default task.
-	grunt.registerTask('resources', 'concat:resources min:resources');
-	grunt.registerTask('default', 'resources');
+	grunt.registerTask('default', 'lint');
 
 };

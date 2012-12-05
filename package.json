@@ -1,28 +1,35 @@
 {
-  "name": "can-compile",
-  "description": "Compile EJS views",
-  "version": "0.1.0",
-  "homepage": "http://daffl.github.com/can-compile",
+  "name" : "can-compile",
+  "description" : "Compile CanJS Mustache and EJS views for lightning fast production apps",
+  "version" : "0.1.0",
+  "homepage" : "http://daffl.github.com/can-compile",
   "author" : {
     "name" : "David Luecke",
-    "email" : "david@bitovi.com",
-    "web" : "http://bitovi.com"
+    "email" : "daff@neyeon.com",
+    "web" : "http://daffl.github.com"
   },
-  "main": "lib/index.js",
-  "engines": {
-    "node": "~0.8"
+  "main" : "lib/index.js",
+  "scripts" : {
+    "test" : "mocha test/"
+  },
+  "engines" : {
+    "node" : "~0.8"
   },
   "repository" : {
     "type" : "git",
     "url" : "git@github.com:daffl/can-compile.git"
   },
-  "bin": {
-    "can-compile": "./bin/can-compile"
+  "bin" : {
+    "can-compile" : "./bin/can-compile"
   },
-  "keywords": [ "gruntplugin", "canjs" ],
-  "dependencies": {
+  "keywords" : [ "gruntplugin", "canjs" ],
+  "devDependencies" : {
+    "expect.js" : ">= 0.1.2"
+  },
+  "dependencies" : {
     "zombie" : "1.4.1",
     "glob-whatev" : "0.1.8",
-    "commander" : "1.1.1"
+    "commander" : "1.1.1",
+    "async" : "0.1.22"
   }
 }

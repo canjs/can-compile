@@ -1,3 +1,5 @@
+'use strict';
+
 var compiler = require('../lib');
 
 module.exports = function (grunt) {
@@ -6,13 +8,15 @@ module.exports = function (grunt) {
 		var options = grunt.config.process(['cancompile', this.target]);
 		var files = grunt.file.expandFiles(this.file.src);
 
-		files.forEach(function(file) {
-			grunt.log.writeln('Adding ' + file);
-		});
+		options.out = options.out || 'views.production.js';
 
-		compiler(files, options, function(err, output) {
-			if(err) return grunt.fail.fatal(err);
+		compiler(files, options, function(err, output, outfile) {
+			if(err) {
+				return grunt.fail.fatal(err);
+			}
+
+			grunt.log.ok('Wrote file ' + outfile);
 			done();
-		});
+		}, grunt.log.writeln.bind(grunt.log));
 	});
-}
+};

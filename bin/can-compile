@@ -7,7 +7,7 @@ var compiler = require('../lib');
 program.version(pkg.version)
 	.usage('[options] <files ...>')
 	.description(pkg.description)
-	.option('-o, --out [name]', 'The output file (default: views.js)', 'views.js')
+	.option('-o, --out [name]', 'The output file (default: views.js)', 'views.production.js')
 	.parse(process.argv);
 
 var files = [];
@@ -19,14 +19,10 @@ program.args.forEach(function(pattern) {
   files = files.concat(globsync.glob(pattern));
 });
 
-files.forEach(function(file) {
-  console.log('Adding ' + file);
-});
-
 compiler(files, program, function(err, output, outfile) {
   if(err) {
     console.error('There was an error: ' + err.message);
   } else {
     console.log('Wrote compiled views to ' + outfile);
   }
-});
+}, console.log);

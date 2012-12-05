@@ -1,5 +1,0 @@
-(function(window, undefined) {
-var can = window.can;
-can.view.preload('view_ejs',can.EJS(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push("<h2>");___v1ew.push(can.view.txt(1,'h2',0,this,function(){ return  message }));___v1ew.push("</h2>");; return ___v1ew.join('')}} }));
-can.view.preload('view_mustache',can.Mustache(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];var ___c0nt3xt = []; ___c0nt3xt.___st4ck = true;var ___st4ck = function(context, self) {var s;if (arguments.length == 1 && context) {s = !context.___st4ck ? [context] : context;} else {s = context && context.___st4ck ? context.concat([self]) : ___st4ck(context).concat([self]);}return (s.___st4ck = true) && s;};___v1ew.push("<h2>");___v1ew.push(can.view.txt(1,'h2',0,this,function(){ return can.Mustache.txt(___st4ck(___c0nt3xt,this),null,can.Mustache.get("message",___st4ck(___c0nt3xt,this)));}));___v1ew.push("</h2>");; return ___v1ew.join('')}} }));
-})(this);
