@@ -95,3 +95,14 @@ So if your CanJS applications HTML file is in the `app` folder within the curren
 that folder as the output file:
 
 > can-compile --out app/views.production.js
+
+## Changelog
+
+__0.2.0:__
+
+- Grunt 0.4.0 compatibility
+- Added Travis CI
+
+__0.1.0:__
+
+- Initial release
