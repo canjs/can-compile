@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/daffl/can-compile.png?branch=master)](https://travis-ci.org/daffl/can-compile)
 
-NodeJS module that compiles CanJS EJS and Mustache views into a single JavaScript file for lightning fast
+NodeJS module that compiles [CanJS](http://canjs.us/) EJS and Mustache views into a single JavaScript file for lightning fast
 production apps.
 
 With NodeJS installed, just run NPM:
@@ -33,6 +33,7 @@ Write the result to `views.combined.js`:
 ## Grunt task
 
 can-compile also comes with a [Grunt](http://gruntjs.com) task so you can easily make it part of your production build.
+Just `npm install can-compile` in you project folder (or add it as a development dependency).
 The following example shows a Gruntfile that compiles all Mustache views and then builds a concatenated and minified `production.js`
 of a CanJS application:
 
