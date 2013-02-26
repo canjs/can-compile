@@ -1,5 +1,7 @@
 # can-compile
 
+[![Build Status](https://travis-ci.org/daffl/can-compile.png?branch=master)](https://travis-ci.org/daffl/can-compile)
+
 NodeJS module that compiles CanJS EJS and Mustache views into a single JavaScript file for lightning fast
 production apps.
 
@@ -35,48 +37,42 @@ The following example shows a Gruntfile that compiles all Mustache views and the
 of a CanJS application:
 
 ```javascript
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
-  // Project configuration.
-  grunt.initConfig({
-    pkg: '<json:package.json>',
-    meta: {
-      banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '<%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>' +
-        '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
-    },
-    cancompile : {
-      dist : {
-        // Compile all mustache files
-        src : '**/*.mustache',
-        // Save to views.production.js
-        out : 'views.production.js'
-      }
-    },
-    concat: {
-      dist: {
-        src: [
-          '<banner:meta.banner>', // Banner
-          'can.jquery.js' // CanJS jQuery ditributable
-          '<config:cancompile.dist.src>', // The compiled views
-          'app.js' // Your CanJS application file
-        ],
-        dest: 'dist/<%= pkg.name %>.js'
-      }
-    },
-    min: {
-      dist: {
-        src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-        dest: 'dist/<%= pkg.name %>.min.js'
-      }
-    }
-  });
+	// Project configuration.
+	grunt.initConfig({
+		cancompile: {
+			dist: {
+				src: ['**/*.ejs', '**/*.mustache'],
+				out: 'production/views.production.js'
+			}
+		},
+		concat: {
+			dist: {
+				src: [
+					'../resources/js/can.jquery.js',
+					'../resources/js/can.view.mustache.js',
+					'js/app.js', // You app
+					'<%= cancompile.dist.out %>' // The compiled views
+				],
+				dest: 'production/production.js'
+			}
+		},
+		uglify: {
+			dist: {
+				files: {
+					'production/production.min.js': ['<%= concat.dist.dest %>']
+				}
+			}
+		}
+	});
 
-  // Default task.
-  grunt.registerTask('default', 'cancompile concat min');
+	// Default task.
+	grunt.registerTask('default', ['cancompile', 'concat', 'uglify']);
 
+	grunt.loadTasks('../tasks');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-concat');
 };
 ```
 

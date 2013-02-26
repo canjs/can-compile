@@ -24,7 +24,13 @@
   },
   "keywords" : [ "gruntplugin", "canjs" ],
   "devDependencies" : {
-    "expect.js" : ">= 0.1.2"
+    "expect.js" : ">= 0.1.2",
+    "mocha": "1.8.1",
+    "grunt": "~ 0.4.0",
+    "grunt-contrib-jshint": ">= 0.1.1"
+  },
+  "scripts": {
+    "test": "mocha test"
   },
   "dependencies" : {
     "zombie" : "1.4.1",
