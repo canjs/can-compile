@@ -1,0 +1,19 @@
+{
+  "name" : "can-compile-example",
+  "description" : "An example for can-compile",
+  "version" : "0.1.0",
+  "homepage" : "http://daffl.github.com/can-compile",
+  "author" : {
+    "name" : "David Luecke",
+    "email" : "daff@neyeon.com",
+    "web" : "http://daffl.github.com"
+  },
+  "engines" : {
+    "node" : "~0.8"
+  },
+  "devDependencies" : {
+    "grunt": "~ 0.4.0",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-concat": "*"
+  }
+}
