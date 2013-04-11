@@ -1,41 +1,47 @@
 {
-  "name": "can-compile",
-  "description": "Compile CanJS Mustache and EJS views for lightning fast production apps",
-  "version": "0.2.0",
-  "homepage": "http://daffl.github.com/can-compile",
-  "author": {
-    "name": "David Luecke",
-    "email": "daff@neyeon.com",
-    "web": "http://daffl.github.com"
-  },
-  "main": "lib/index.js",
-  "scripts": {
-    "test": "mocha test"
-  },
-  "engines": {
-    "node": "~0.10"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:daffl/can-compile.git"
-  },
-  "bin": {
-    "can-compile": "./bin/can-compile"
-  },
-  "keywords": [
-    "gruntplugin",
-    "canjs"
-  ],
-  "devDependencies": {
-    "expect.js": ">= 0.1.2",
-    "mocha": "1.8.1",
-    "grunt": "~ 0.4.0",
-    "grunt-contrib-jshint": ">= 0.1.1"
-  },
-  "dependencies": {
-    "glob-whatev": "0.1.8",
-    "commander": "1.1.1",
-    "async": "0.1.22",
-    "jsdom": "~0.5.6"
-  }
+	"name": "can-compile",
+	"description": "Compile CanJS Mustache and EJS views for lightning fast production apps",
+	"version": "0.2.0",
+	"homepage": "http://daffl.github.com/can-compile",
+	"author": {
+		"name": "David Luecke",
+		"email": "daff@neyeon.com",
+		"web": "http://daffl.github.com"
+	},
+	"main": "lib/index.js",
+	"scripts": {
+		"test": "mocha test"
+	},
+	"engines": {
+		"node": "~0.10"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:daffl/can-compile.git"
+	},
+	"bin": {
+		"can-compile": "./bin/can-compile"
+	},
+	"keywords": [
+		"gruntplugin",
+		"canjs"
+	],
+	"devDependencies": {
+		"expect.js": ">= 0.1.2",
+		"mocha": "1.8.1",
+		"grunt": "~ 0.4.0",
+		"grunt-contrib-jshint": ">= 0.1.1"
+	},
+	"dependencies": {
+		"glob-whatev": "0.1.8",
+		"commander": "1.1.1",
+		"async": "0.1.22",
+		"jsdom": "~0.5.6"
+	},
+	"peerDependencies": {
+		"grunt": "~0.4.0"
+	},
+	"scripts": {
+		"test": "mocha test"
+	}
 }
