@@ -99,6 +99,12 @@ that folder as the output file:
 
 ## Changelog
 
+__0.2.1:__
+
+- Switched to plain JSDom
+- Update to CanJS 1.1.5
+- Verified Node 0.10 compatibility
+
 __0.2.0:__
 
 - Grunt 0.4.0 compatibility

@@ -1,7 +1,7 @@
-/*
- * CanJS - 1.1.2 (2012-11-28)
+/*!
+ * CanJS - 1.1.5 (2013-03-27)
  * http://canjs.us/
- * Copyright (c) 2012 Bitovi
+ * Copyright (c) 2013 Bitovi
  * Licensed MIT
  */
 (function (window, $, undefined) {
@@ -16,6 +16,15 @@
 		// Returns `true` if something looks like a deferred.
 		return obj && isFunction(obj.then) && isFunction(obj.pipe);
 	};
+
+	var cid = 0;
+	can.cid = function (object, name) {
+		if (object._cid) {
+			return object._cid
+		} else {
+			return object._cid = (name || "") + (++cid)
+		}
+	}
 	// ## can/util/array/each.js
 	can.each = function (elements, callback, context) {
 		var i = 0,
@@ -62,9 +71,19 @@
 			return this;
 		},
 		// jquery caches fragments, we always needs a new one
-		buildFragment: function (result, element) {
-			var ret = $.buildFragment([result], $(element));
-			return ret.cacheable ? $.clone(ret.fragment) : ret.fragment;
+		buildFragment: function (elems, context) {
+			var oldFragment = $.buildFragment,
+				ret;
+
+			elems = [elems];
+			// Set context per 1.8 logic
+			context = context || document;
+			context = !context.nodeType && context[0] || context;
+			context = context.ownerDocument || context;
+
+			ret = oldFragment.call(jQuery, elems, context);
+
+			return ret.cacheable ? $.clone(ret.fragment) : ret.fragment || ret;
 		},
 		$: $,
 		each: can.each
@@ -100,21 +119,21 @@
 
 	// ## can/util/string/string.js
 	// ##string.js
-	// _Miscellaneous string utility functions._
+	// _Miscellaneous string utility functions._  
 	// Several of the methods in this plugin use code adapated from Prototype
 	// Prototype JavaScript framework, version 1.6.0.1.
 	// Â© 2005-2007 Sam Stephenson
-	var undHash = /_|-/,
-		colons = /\=\=/,
-		words = /([A-Z]+)([A-Z][a-z])/g,
-		lowUp = /([a-z\d])([A-Z])/g,
-		dash = /([a-z\d])([A-Z])/g,
-		replacer = /\{([^\}]+)\}/g,
-		quote = /"/g,
-		singleQuote = /'/g,
+	var strUndHash = /_|-/,
+		strColons = /\=\=/,
+		strWords = /([A-Z]+)([A-Z][a-z])/g,
+		strLowUp = /([a-z\d])([A-Z])/g,
+		strDash = /([a-z\d])([A-Z])/g,
+		strReplacer = /\{([^\}]+)\}/g,
+		strQuote = /"/g,
+		strSingleQuote = /'/g,
 
 	// Returns the `prop` property from `obj`.
-	// If `add` is true and `prop` doesn't exist in `obj`, create it as an
+	// If `add` is true and `prop` doesn't exist in `obj`, create it as an 
 	// empty object.
 		getNext = function (obj, prop, add) {
 			return prop in obj ? obj[prop] : (add && (obj[prop] = {}));
@@ -130,13 +149,13 @@
 		esc: function (content) {
 			// Convert bad values into empty strings
 			var isInvalid = content === null || content === undefined || (isNaN(content) && ("" + content === 'NaN'));
-			return ("" + (isInvalid ? '' : content)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(quote, '&#34;').replace(singleQuote, "&#39;");
+			return ("" + (isInvalid ? '' : content)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(strQuote, '&#34;').replace(strSingleQuote, "&#39;");
 		},
 
 
 		getObject: function (name, roots, add) {
 
-			// The parts of the name we are looking up
+			// The parts of the name we are looking up  
 			// `['App','Models','Recipe']`
 			var parts = name ? name.split('.') : [],
 				length = parts.length,
@@ -154,7 +173,7 @@
 			while (roots[r]) {
 				current = roots[r];
 
-				// Walk current to the 2nd to last object or until there
+				// Walk current to the 2nd to last object or until there 
 				// is not a container.
 				for (i = 0; i < length - 1 && isContainer(current); i++) {
 					current = getNext(current, parts[i], add);
@@ -187,13 +206,13 @@
 
 		// Underscores a string.
 		underscore: function (s) {
-			return s.replace(colons, '/').replace(words, '$1_$2').replace(lowUp, '$1_$2').replace(dash, '_').toLowerCase();
+			return s.replace(strColons, '/').replace(strWords, '$1_$2').replace(strLowUp, '$1_$2').replace(strDash, '_').toLowerCase();
 		},
 		// Micro-templating.
 		sub: function (str, data, remove) {
 			var obs = [];
 
-			obs.push(str.replace(replacer, function (whole, inside) {
+			obs.push(str.replace(strReplacer, function (whole, inside) {
 
 				// Convert inside to type.
 				var ob = can.getObject(inside, data, remove === undefined ? remove : !remove);
@@ -217,14 +236,14 @@
 
 		// These regex's are used throughout the rest of can, so let's make
 		// them available.
-		replacer: replacer,
-		undHash: undHash
+		replacer: strReplacer,
+		undHash: strUndHash
 	});
 	// ## can/construct/construct.js
 	// ## construct.js
-	// `can.Construct`
+	// `can.Construct`  
 	// _This is a modified version of
-	// [John Resig's class](http://ejohn.org/blog/simple-javascript-inheritance/).
+	// [John Resig's class](http://ejohn.org/blog/simple-javascript-inheritance/).  
 	// It provides class level inheritance and callbacks._
 	// A private flag used to initialize a new class instance without
 	// initializing it's bindings.
@@ -251,7 +270,7 @@
 				args = inst.setup.apply(inst, arguments);
 			}
 
-			// Call `init` if there is an `init`
+			// Call `init` if there is an `init`  
 			// If `setup` returned `args`, use those as the arguments
 			if (inst.init) {
 				inst.init.apply(inst, args || arguments);
@@ -260,8 +279,8 @@
 			return inst;
 		},
 		// Overwrites an object with methods. Used in the `super` plugin.
-		// `newProps` - New properties to add.
-		// `oldProps` - Where the old properties might be (used with `super`).
+		// `newProps` - New properties to add.  
+		// `oldProps` - Where the old properties might be (used with `super`).  
 		// `addTo` - What we are adding to.
 		_inherit: function (newProps, oldProps, addTo) {
 			can.extend(addTo || newProps, newProps || {})
@@ -272,7 +291,7 @@
 		_overwrite: function (what, oldProps, propName, val) {
 			what[propName] = val;
 		},
-		// Set `defaults` as the merger of the parent `defaults` and this
+		// Set `defaults` as the merger of the parent `defaults` and this 
 		// object's `defaults`. If you overwrite this method, make sure to
 		// include option merging logic.
 		setup: function (base, fullName) {
@@ -390,9 +409,9 @@
 
 	});
 	// ## can/observe/observe.js
-	// ## observe.js
-	// `can.Observe`
-	// _Provides the observable pattern for JavaScript Objects._
+	// ## observe.js  
+	// `can.Observe`  
+	// _Provides the observable pattern for JavaScript Objects._  
 	// Returns `true` if something is an object with properties of its own.
 	var canMakeObserve = function (obj) {
 			return obj && (can.isArray(obj) || can.isPlainObject(obj) || (obj instanceof can.Observe));
@@ -406,9 +425,9 @@
 				}
 			});
 		},
-	// Listens to changes on `val` and "bubbles" the event up.
-	// `val` - The object to listen for changes on.
-	// `prop` - The property name is at on.
+	// Listens to changes on `val` and "bubbles" the event up.  
+	// `val` - The object to listen for changes on.  
+	// `prop` - The property name is at on.  
 	// `parent` - The parent object of prop.
 	// `ob` - (optional) The Observe object constructor
 	// `list` - (optional) The observable list constructor
@@ -434,7 +453,7 @@
 					ev = args.shift();
 				args[0] = (prop === "*" ? [parent.indexOf(val), args[0]] : [prop, args[0]]).join(".");
 
-				// track objects dispatched on this observe
+				// track objects dispatched on this observe		
 				ev.triggeredNS = ev.triggeredNS || {};
 
 				// if it has already been dispatched exit
@@ -443,7 +462,7 @@
 				}
 
 				ev.triggeredNS[parent._cid] = true;
-				// send change event with modified attr to parent
+				// send change event with modified attr to parent	
 				can.trigger(parent, ev, args);
 				// send modified attr event to parent
 				//can.trigger(parent, args[0], args);
@@ -454,9 +473,9 @@
 
 	// An `id` to track events for a given observe.
 		observeId = 0,
-	// A helper used to serialize an `Observe` or `Observe.List`.
-	// `observe` - The observable.
-	// `how` - To serialize with `attr` or `serialize`.
+	// A helper used to serialize an `Observe` or `Observe.List`.  
+	// `observe` - The observable.  
+	// `how` - To serialize with `attr` or `serialize`.  
 	// `where` - To put properties, in an `{}` or `[]`.
 		serialize = function (observe, how, where) {
 			// Go through each property.
@@ -477,7 +496,10 @@
 		},
 		bind = $method('addEvent'),
 		unbind = $method('removeEvent'),
-		attrParts = function (attr) {
+		attrParts = function (attr, keepKey) {
+			if (keepKey) {
+				return [attr];
+			}
 			return can.isArray(attr) ? attr : ("" + attr).split(".");
 		},
 	// Which batch of events this is for -- might not want to send multiple
@@ -489,14 +511,7 @@
 		batchEvents = [],
 		stopCallbacks = [];
 
-	var cid = 0;
-	can.cid = function (object, name) {
-		if (object._cid) {
-			return object._cid
-		} else {
-			return object._cid = (name || "") + (++cid)
-		}
-	}
+
 
 
 	var Observe = can.Observe = can.Construct({
@@ -532,7 +547,7 @@
 						can.trigger.apply(can, args);
 					});
 					can.each(callbacks, function (cb) {
-						cb;
+						cb();
 					});
 				}
 			},
@@ -543,13 +558,12 @@
 					if (transactions == 0) {
 						return can.trigger(item, event, args);
 					} else {
+						event = typeof event === "string" ? {
+							type: event
+						} : event;
+						event.batchNum = batchNum;
 						batchEvents.push([
-							item,
-							{
-								type: event,
-								batchNum: batchNum
-							},
-							args]);
+							item, event, args]);
 					}
 				}
 			},
@@ -583,6 +597,9 @@
 					batchNum: ev.batchNum
 				}, [newVal, oldVal]);
 			},
+			_triggerChange: function (attr, how, newVal, oldVal) {
+				Observe.triggerBatch(this, "change", can.makeArray(arguments))
+			},
 
 			attr: function (attr, val) {
 				// This is super obfuscated for space -- basically, we're checking
@@ -607,18 +624,22 @@
 			},
 
 			removeAttr: function (attr) {
+				// Info if this is List or not
+				var isList = this instanceof can.Observe.List,
 				// Convert the `attr` into parts (if nested).
-				var parts = attrParts(attr),
+					parts = attrParts(attr),
 				// The actual property to remove.
 					prop = parts.shift(),
 				// The current value.
-					current = this._data[prop];
+					current = isList ? this[prop] : this._data[prop];
 
 				// If we have more parts, call `removeAttr` on that part.
 				if (parts.length) {
 					return current.removeAttr(parts)
 				} else {
-					if (prop in this._data) {
+					if (isList) {
+						this.splice(prop, 1)
+					} else if (prop in this._data) {
 						// Otherwise, `delete`.
 						delete this._data[prop];
 						// Create the event.
@@ -626,15 +647,20 @@
 							delete this[prop]
 						}
 						// Let others know the number of keys have changed
-						Observe.triggerBatch(this, "__keys", undefined);
-						Observe.triggerBatch(this, "change", [prop, "remove", undefined, current]);
-						Observe.triggerBatch(this, prop, [undefined, current]);
+						Observe.triggerBatch(this, "__keys");
+						this._triggerChange(prop, "remove", undefined, current);
+
 					}
 					return current;
 				}
 			},
 			// Reads a property from the `object`.
 			_get: function (attr) {
+				var value = typeof attr === 'string' && !! ~attr.indexOf('.') && this.__get(attr);
+				if (value) {
+					return value;
+				}
+
 				// break up the attr (`"foo.bar"`) into `["foo","bar"]`
 				var parts = attrParts(attr),
 				// get the value of the first attr name (`"foo"`)
@@ -658,9 +684,9 @@
 			// Sets `attr` prop as value on this object where.
 			// `attr` - Is a string of properties or an array  of property values.
 			// `value` - The raw value to set.
-			_set: function (attr, value) {
+			_set: function (attr, value, keepKey) {
 				// Convert `attr` to attr parts (if it isn't already).
-				var parts = attrParts(attr),
+				var parts = attrParts(attr, keepKey),
 				// The immediate prop we are setting.
 					prop = parts.shift(),
 				// The current value.
@@ -674,11 +700,6 @@
 					// We're in "real" set territory.
 					if (this.__convert) {
 						value = this.__convert(prop, value)
-					}
-					// If there is no current value, let others know that
-					// the the number of keys have changed
-					if (!current) {
-						Observe.triggerBatch(this, "__keys", undefined);
 					}
 					this.__set(prop, value, current)
 				} else {
@@ -706,8 +727,15 @@
 							// Value is normal.
 							value);
 
+					if (changeType == "add") {
+						// If there is no current value, let others know that
+						// the the number of keys have changed
+						Observe.triggerBatch(this, "__keys", undefined);
+
+					}
 					// `batchTrigger` the change event.
-					Observe.triggerBatch(this, "change", [prop, changeType, value, current]);
+					this._triggerChange(prop, changeType, value, current);
+
 					//Observe.triggerBatch(this, prop, [value, current]);
 					// If we can stop listening to our old value, do it.
 					current && unhookup([current], this._cid);
@@ -724,6 +752,7 @@
 				}
 			},
 
+
 			bind: bind,
 
 			unbind: unbind,
@@ -738,11 +767,11 @@
 					return serialize(this, 'attr', {})
 				}
 
-				props = can.extend(true, {}, props);
+				props = can.extend({}, props);
 				var prop, self = this,
 					newVal;
 				Observe.startBatch();
-				this.each(function (curVal, prop, toRemove) {
+				this.each(function (curVal, prop) {
 					newVal = props[prop];
 
 					// If we are merging...
@@ -750,33 +779,41 @@
 						remove && self.removeAttr(prop);
 						return;
 					}
+
 					if (self.__convert) {
-						newVal = self.__convert(prop, newVal);
+						newVal = self.__convert(prop, newVal)
 					}
 
-					if (curVal !== newVal) {
-						if (curVal instanceof can.Observe && newVal instanceof can.Observe) {
-							unhookup([curVal], self._cid);
-						}
-
-						if (newVal instanceof can.Observe) {
-							self._set(prop, newVal)
-						}
-						else if (canMakeObserve(curVal) && canMakeObserve(newVal)) {
-							curVal.attr(newVal, toRemove)
-						} else if (curVal != newVal) {
-							self._set(prop, newVal)
-						}
+					// if we're dealing with models, want to call _set to let converter run
+					if (newVal instanceof can.Observe) {
+						self.__set(prop, newVal, curVal)
+						// if its an object, let attr merge
+					} else if (canMakeObserve(curVal) && canMakeObserve(newVal) && curVal.attr) {
+						curVal.attr(newVal, remove)
+						// otherwise just set
+					} else if (curVal != newVal) {
+						self.__set(prop, newVal, curVal)
 					}
+
 					delete props[prop];
 				})
 				// Add remaining props.
 				for (var prop in props) {
 					newVal = props[prop];
-					this._set(prop, newVal)
+					this._set(prop, newVal, true)
 				}
 				Observe.stopBatch()
 				return this;
+			},
+
+
+			compute: function (prop) {
+				var self = this,
+					computer = function (val) {
+						return self.attr(prop, val);
+					};
+
+				return can.compute ? can.compute(computer) : computer;
 			}
 		});
 	// Helpers for `observable` lists.
@@ -788,12 +825,18 @@
 					this.length = 0;
 					can.cid(this, ".observe")
 					this._init = 1;
-					this.push.apply(this, can.makeArray(instances || []));
+					if (can.isDeferred(instances)) {
+						this.replace(instances)
+					} else {
+						this.push.apply(this, can.makeArray(instances || []));
+					}
 					this.bind('change' + this._cid, can.proxy(this._changes, this));
 					can.extend(this, options);
 					delete this._init;
 				},
-				_changes: function (ev, attr, how, newVal, oldVal) {
+				_triggerChange: function (attr, how, newVal, oldVal) {
+
+					Observe.prototype._triggerChange.apply(this, arguments)
 					// `batchTrigger` direct add and remove events...
 					if (!~attr.indexOf('.')) {
 
@@ -808,7 +851,7 @@
 						}
 
 					}
-					Observe.prototype._changes.apply(this, arguments)
+
 				},
 				__get: function (attr) {
 					return attr ? this[attr] : this;
@@ -831,20 +874,22 @@
 					for (i = 2; i < args.length; i++) {
 						var val = args[i];
 						if (canMakeObserve(val)) {
-							args[i] = hookupBubble(val, "*", this)
+							args[i] = hookupBubble(val, "*", this, this.constructor.Observe, this.constructor)
 						}
 					}
 					if (howMany === undefined) {
 						howMany = args[1] = this.length - index;
 					}
 					var removed = splice.apply(this, args);
+					can.Observe.startBatch();
 					if (howMany > 0) {
-						Observe.triggerBatch(this, "change", ["" + index, "remove", undefined, removed]);
+						this._triggerChange("" + index, "remove", undefined, removed);
 						unhookup(removed, this._cid);
 					}
 					if (args.length > 2) {
-						Observe.triggerBatch(this, "change", ["" + index, "add", args.slice(2), removed]);
+						this._triggerChange("" + index, "add", args.slice(2), removed);
 					}
+					can.Observe.stopBatch();
 					return removed;
 				},
 
@@ -902,25 +947,27 @@
 
 
 		function (where, name) {
+			var orig = [][name]
 			list.prototype[name] = function () {
 				// Get the items being added.
-				var args = can.makeArray(arguments),
+				var args = [],
 				// Where we are going to add items.
-					len = where ? this.length : 0;
+					len = where ? this.length : 0,
+					i = arguments.length,
+					res, val, constructor = this.constructor;
 
 				// Go through and convert anything to an `observe` that needs to be converted.
-				for (var i = 0; i < args.length; i++) {
-					var val = args[i];
-					if (canMakeObserve(val)) {
-						args[i] = hookupBubble(val, "*", this, this.constructor.Observe, this.constructor);
-					}
+				while (i--) {
+					val = arguments[i];
+					args[i] = canMakeObserve(val) ? hookupBubble(val, "*", this, this.constructor.Observe, this.constructor) : val;
 				}
 
 				// Call the original method.
-				var res = [][name].apply(this, args);
+				res = orig.apply(this, args);
 
-				if (!this.comparator || !args.length) {
-					Observe.triggerBatch(this, "change", ["" + len, "add", args, undefined])
+				if (!this.comparator || args.length) {
+
+					this._triggerChange("" + len, "add", args, undefined);
 				}
 
 				return res;
@@ -950,7 +997,7 @@
 				// `undefined` - The new values (there are none).
 				// `res` - The old, removed values (should these be unbound).
 				// `len` - Where these items were removed.
-				Observe.triggerBatch(this, "change", ["" + len, "remove", undefined, [res]])
+				this._triggerChange("" + len, "remove", undefined, [res])
 
 				if (res && res.unbind) {
 					res.unbind("change" + this._cid)
@@ -970,6 +1017,9 @@
 		join: [].join,
 
 
+		reverse: [].reverse,
+
+
 		slice: function () {
 			var temp = Array.prototype.slice.apply(this, arguments);
 			return new this.constructor(temp);
@@ -987,6 +1037,17 @@
 
 		forEach: function (cb, thisarg) {
 			can.each(this, cb, thisarg || this);
+		},
+
+
+		replace: function (newList) {
+			if (can.isDeferred(newList)) {
+				newList.then(can.proxy(this.replace, this));
+			} else {
+				this.splice.apply(this, [0, this.length].concat(can.makeArray(newList || [])));
+			}
+
+			return this;
 		}
 	});
 
@@ -1001,8 +1062,8 @@
 	}
 	// ## can/model/model.js
 
-	// ## model.js
-	// `can.Model`
+	// ## model.js  
+	// `can.Model`  
 	// _A `can.Observe` that connects to a RESTful interface._
 	// Generic deferred piping function
 	var pipe = function (def, model, func) {
@@ -1039,7 +1100,7 @@
 			// If we get a string, handle it.
 			if (typeof ajaxOb == "string") {
 				// If there's a space, it's probably the type.
-				var parts = ajaxOb.split(/\s/);
+				var parts = ajaxOb.split(/\s+/);
 				params.url = parts.pop();
 				if (parts.length) {
 					params.type = parts.pop();
@@ -1062,7 +1123,18 @@
 			}, params));
 		},
 		makeRequest = function (self, type, success, error, method) {
-			var deferred, args = [self.serialize()],
+			var args;
+			// if we pass an array as `self` it it means we are coming from
+			// the queued request, and we're passing already serialized data
+			// self's signature will be: [self, serializedData]
+			if (can.isArray(self)) {
+				args = self[1];
+				self = self[0];
+			} else {
+				args = self.serialize();
+			}
+			args = [args];
+			var deferred,
 			// The model.
 				model = self.constructor,
 				jqXHR;
@@ -1095,7 +1167,7 @@
 			return deferred;
 		},
 
-	// This object describes how to make an ajax request for each ajax method.
+	// This object describes how to make an ajax request for each ajax method.  
 	// The available properties are:
 	//		`url` - The default url to use as indicated as a property on the model.
 	//		`type` - The default http request type
@@ -1208,6 +1280,7 @@
 				this._url = this._shortName + "/{" + this.id + "}"
 			},
 			_ajax: ajaxMaker,
+			_makeRequest: makeRequest,
 			_clean: function () {
 				this._reqs--;
 				if (!this._reqs) {
@@ -1258,7 +1331,7 @@
 
 
 
-				if (res.length > 0) {
+				if (res.length) {
 					res.splice(0);
 				}
 
@@ -1287,7 +1360,7 @@
 					attributes = attributes.serialize();
 				}
 				var id = attributes[this.id],
-					model = id && this.store[id] ? this.store[id].attr(attributes) : new this(attributes);
+					model = (id || id === 0) && this.store[id] ? this.store[id].attr(attributes, this.removeAttr || false) : new this(attributes);
 				if (this._reqs) {
 					this.store[attributes[this.id]] = model;
 				}
@@ -1307,13 +1380,19 @@
 			},
 
 			destroy: function (success, error) {
+				if (this.isNew()) {
+					var self = this;
+					return can.Deferred().done(function (data) {
+						self.destroyed(data)
+					}).resolve(self);
+				}
 				return makeRequest(this, 'destroy', success, error, 'destroyed');
 			},
 
 			bind: function (eventName) {
 				if (!ignoreHookup.test(eventName)) {
 					if (!this._bindings) {
-						this.constructor.store[getId(this)] = this;
+						this.constructor.store[this.__get(this.constructor.id)] = this;
 						this._bindings = 0;
 					}
 					this._bindings++;
@@ -1370,6 +1449,11 @@
 
 			// Call event on the instance
 			can.trigger(this, funcName);
+
+			// triggers change event that bubble's like
+			// handler( 'change','1.destroyed' ). This is used
+			// to remove items on destroyed from Model Lists.
+			// but there should be a better way.
 			can.trigger(this, "change", funcName)
 
 
@@ -1378,7 +1462,7 @@
 		};
 	});
 
-	// Model lists are just like `Observe.List` except that when their items are
+	// Model lists are just like `Observe.List` except that when their items are 
 	// destroyed, it automatically gets removed from the list.
 	var ML = can.Model.List = can.Observe.List({
 		setup: function () {
@@ -1398,8 +1482,8 @@
 
 	// ## can/util/string/deparam/deparam.js
 
-	// ## deparam.js
-	// `can.deparam`
+	// ## deparam.js  
+	// `can.deparam`  
 	// _Takes a string of name value pairs and returns a Object literal that represents those params._
 	var digitTest = /^\d+$/,
 		keyBreaker = /([^\[\]]+)|(\[\])/g,
@@ -1427,20 +1511,22 @@
 							value = prep(parts.join("=")),
 							current = data;
 
-						parts = key.match(keyBreaker);
+						if (key) {
+							parts = key.match(keyBreaker);
 
-						for (var j = 0, l = parts.length - 1; j < l; j++) {
-							if (!current[parts[j]]) {
-								// If what we are pointing to looks like an `array`
-								current[parts[j]] = digitTest.test(parts[j + 1]) || parts[j + 1] == "[]" ? [] : {};
+							for (var j = 0, l = parts.length - 1; j < l; j++) {
+								if (!current[parts[j]]) {
+									// If what we are pointing to looks like an `array`
+									current[parts[j]] = digitTest.test(parts[j + 1]) || parts[j + 1] == "[]" ? [] : {};
+								}
+								current = current[parts[j]];
 							}
-							current = current[parts[j]];
-						}
-						lastPart = parts.pop();
-						if (lastPart == "[]") {
-							current.push(value);
-						} else {
-							current[lastPart] = value;
+							lastPart = parts.pop();
+							if (lastPart == "[]") {
+								current.push(value);
+							} else {
+								current[lastPart] = value;
+							}
 						}
 					});
 			}
@@ -1448,10 +1534,10 @@
 		}
 	});
 	// ## can/route/route.js
-	// ## route.js
-	// `can.route`
-	// _Helps manage browser history (and client state) by synchronizing the
-	// `window.location.hash` with a `can.Observe`._
+	// ## route.js  
+	// `can.route`  
+	// _Helps manage browser history (and client state) by synchronizing the 
+	// `window.location.hash` with a `can.Observe`._  
 	// Helper methods used for matching routes.
 	var
 	// `RegExp` used to match route variables of the type ':name'.
@@ -1459,7 +1545,7 @@
 		matcher = /\:([\w\.]+)/g,
 	// Regular expression for identifying &amp;key=value lists.
 		paramsMatcher = /^(?:&[^=]+=[^&]*)+/,
-	// Converts a JS Object into a list of parameters that can be
+	// Converts a JS Object into a list of parameters that can be 
 	// inserted into an html element tag.
 		makeProps = function (props) {
 			var tags = [];
@@ -1470,8 +1556,8 @@
 		},
 	// Checks if a route matches the data provided. If any route variable
 	// is not present in the data, the route does not match. If all route
-	// variables are present in the data, the number of matches is returned
-	// to allow discerning between general and more specific routes.
+	// variables are present in the data, the number of matches is returned 
+	// to allow discerning between general and more specific routes. 
 		matchesData = function (route, data) {
 			var count = 0,
 				i = 0,
@@ -1520,7 +1606,7 @@
 
 		// Add route in a form that can be easily figured out.
 		can.route.routes[url] = {
-			// A regular expression that will match the route when variable values
+			// A regular expression that will match the route when variable values 
 			// are present; i.e. for `:page/:type` the `RegExp` is `/([\w\.]*)/([\w\.]*)/` which
 			// will match for any value of `:page` and `:type` (word chars or period).
 			test: new RegExp("^" + test + "($|" + wrapQuote(can.route._querySeparator) + ")"),
@@ -1591,7 +1677,7 @@
 					}
 				});
 
-				// The remaining elements of data are added as
+				// The remaining elements of data are added as 
 				// `&amp;` separated parameters to the url.
 				after = can.param(cpy);
 				// if we are paraming for setting the hash
@@ -1631,7 +1717,7 @@
 
 				// Add the default values for this route.
 				obj = extend(true, {}, route.defaults, obj);
-				// Overwrite each of the default values in `obj` with those in
+				// Overwrite each of the default values in `obj` with those in 
 				// parts if that part is not empty.
 				each(parts, function (part, i) {
 					if (part && part !== can.route._querySeparator) {
@@ -1711,7 +1797,7 @@
 	// Deparameterizes the portion of the hash of interest and assign the
 	// values to the `can.route.data` removing existing values no longer in the hash.
 	// setState is called typically by hashchange which fires asynchronously
-	// So it's possible that someone started changing the data before the
+	// So it's possible that someone started changing the data before the 
 	// hashchange event fired.  For this reason, it will not set the route data
 	// if the data is changing or the hash already matches the hash that was set.
 		setState = can.route.setState = function () {
@@ -1748,14 +1834,20 @@
 	// `onready` event...
 	can.bind.call(document, "ready", can.route.ready);
 
-	// extend route to have a similar property
+	// Libraries other than jQuery don't execute the document `ready` listener
+	// if we are already DOM ready
+	if ((document.readyState === 'complete' || document.readyState === "interactive") && onready) {
+		can.route.ready();
+	}
+
+	// extend route to have a similar property 
 	// that is often checked in mustache to determine
 	// an object's observability
 	can.route.constructor.canMakeObserve = can.Observe.canMakeObserve;
 
 	// ## can/control/control.js
 	// ## control.js
-	// `can.Control`
+	// `can.Control`  
 	// _Controller_
 	// Binds an element, returns a function that unbinds.
 	var bind = function (el, ev, callback) {
@@ -1771,7 +1863,7 @@
 		each = can.each,
 		slice = [].slice,
 		paramReplacer = /\{([^\}]+)\}/g,
-		special = can.getObject("$.event.special") || {},
+		special = can.getObject("$.event.special", [can]) || {},
 
 	// Binds an element, returns a function that unbinds.
 		delegate = function (el, selector, ev, callback) {
@@ -1795,7 +1887,7 @@
 			// Setup pre-processes which methods are event listeners.
 			setup: function () {
 
-				// Allow contollers to inherit "defaults" from super-classes as it
+				// Allow contollers to inherit "defaults" from super-classes as it 
 				// done in `can.Construct`
 				can.Construct.setup.apply(this, arguments);
 
@@ -1848,8 +1940,8 @@
 			// (something that binds things).
 			_action: function (methodName, options) {
 
-				// If we don't have options (a `control` instance), we'll run this
-				// later.
+				// If we don't have options (a `control` instance), we'll run this 
+				// later.  
 				paramReplacer.lastIndex = 0;
 				if (options || !paramReplacer.test(methodName)) {
 					// If we have options, run sub to replace templates `{}` with a
@@ -1876,10 +1968,10 @@
 					};
 				}
 			},
-			// An object of `{eventName : function}` pairs that Control uses to
+			// An object of `{eventName : function}` pairs that Control uses to 
 			// hook up events auto-magically.
 			processors: {},
-			// A object of name-value pairs that act as default values for a
+			// A object of name-value pairs that act as default values for a 
 			// control instance
 			defaults: {}
 		},
@@ -1920,7 +2012,7 @@
 					// Adds bindings.
 					this.off();
 
-					// Go through the cached list of actions and use the processor
+					// Go through the cached list of actions and use the processor 
 					// to bind
 					var cls = this.constructor,
 						bindings = this._bindings,
@@ -1937,7 +2029,7 @@
 					}
 
 
-					// Setup to be destroyed...
+					// Setup to be destroyed...  
 					// don't bind because we don't want to remove it.
 					can.bind.call(element, "destroyed", destroyCB);
 					bindings.push(function (el) {
@@ -2001,7 +2093,7 @@
 
 	var processors = can.Control.processors,
 	// Processors do the binding.
-	// They return a function that unbinds when called.
+	// They return a function that unbinds when called.  
 	// The basic processor that binds events.
 		basicProcessor = function (el, event, selector, methodName, control) {
 			return binder(el, event, can.Control._shifter(control, methodName), selector);
@@ -2017,7 +2109,7 @@
 
 	// ## can/control/route/route.js
 
-	// ## control/route.js
+	// ## control/route.js  
 	// _Controller route integration._
 	can.Control.processors.route = function (el, event, selector, funcName, controller) {
 		selector = selector || "";
@@ -2045,7 +2137,7 @@
 
 	// ## can/view/view.js
 	// ## view.js
-	// `can.view`
+	// `can.view`  
 	// _Templating abstraction._
 	var isFunction = can.isFunction,
 		makeArray = can.makeArray,
@@ -2053,19 +2145,40 @@
 		hookupId = 1,
 
 		$view = can.view = function (view, data, helpers, callback) {
+			// If helpers is a `function`, it is actually a callback.
+			if (isFunction(helpers)) {
+				callback = helpers;
+				helpers = undefined;
+			}
+
+			var pipe = function (result) {
+					return $view.frag(result);
+				},
+			// In case we got a callback, we need to convert the can.view.render
+			// result to a document fragment
+				wrapCallback = isFunction(callback) ?
+					function (frag) {
+						callback(pipe(frag));
+					} : null,
 			// Get the result.
-			var result = $view.render(view, data, helpers, callback);
+				result = $view.render(view, data, helpers, wrapCallback),
+				deferred = can.Deferred();
+
 			if (isFunction(result)) {
 				return result;
 			}
+
 			if (can.isDeferred(result)) {
-				return result.pipe(function (result) {
-					return $view.frag(result);
+				result.then(function (result, data) {
+					deferred.resolve.call(deferred, pipe(result), data);
+				}, function () {
+					deferred.fail.apply(deferred, arguments);
 				});
+				return deferred;
 			}
 
 			// Convert it into a dom frag.
-			return $view.frag(result);
+			return pipe(result);
 		};
 
 	can.extend($view, {
@@ -2167,7 +2280,8 @@
 
 			if (deferreds.length) { // Does data contain any deferreds?
 				// The deferred that resolves into the rendered content...
-				var deferred = new can.Deferred();
+				var deferred = new can.Deferred(),
+					dataCopy = can.extend({}, data);
 
 				// Add the view request to the list of deferreds.
 				deferreds.push(get(view, true))
@@ -2183,26 +2297,28 @@
 
 					// Make data look like the resolved deferreds.
 					if (can.isDeferred(data)) {
-						data = usefulPart(resolved);
+						dataCopy = usefulPart(resolved);
 					}
 					else {
 						// Go through each prop in data again and
 						// replace the defferreds with what they resolved to.
 						for (var prop in data) {
 							if (can.isDeferred(data[prop])) {
-								data[prop] = usefulPart(objs.shift());
+								dataCopy[prop] = usefulPart(objs.shift());
 							}
 						}
 					}
 
 					// Get the rendered result.
-					result = renderer(data, helpers);
+					result = renderer(dataCopy, helpers);
 
 					// Resolve with the rendered view.
-					deferred.resolve(result);
+					deferred.resolve(result, dataCopy);
 
 					// If there's a `callback`, call it back with the result.
-					callback && callback(result);
+					callback && callback(result, dataCopy);
+				}, function () {
+					deferred.reject.apply(deferred, arguments)
 				});
 				// Return the deferred...
 				return deferred;
@@ -2243,12 +2359,12 @@
 							response = data ? renderer(data, helpers) : renderer;
 						});
 					}
-
 				}
 
 				return response;
 			}
 		},
+
 
 		registerView: function (id, text, type, def) {
 			// Get the renderer function.
@@ -2275,9 +2391,9 @@
 				throw "can.view: No template or empty template:" + url;
 			}
 		},
-	// `Returns a `view` renderer deferred.
-	// `url` - The url to the template.
-	// `async` - If the ajax request should be asynchronous.
+	// `Returns a `view` renderer deferred.  
+	// `url` - The url to the template.  
+	// `async` - If the ajax request should be asynchronous.  
 	// Returns a deferred.
 		get = function (url, async) {
 			var suffix = url.match(/\.[\w\d]+$/),
@@ -2325,7 +2441,7 @@
 			// Set the template engine type.
 			type = $view.types[suffix];
 
-			// If it is cached,
+			// If it is cached, 
 			if ($view.cached[id]) {
 				// Return the cached deferred renderer.
 				return $view.cached[id];
@@ -2378,35 +2494,24 @@
 		};
 
 
-	if (window.steal) {
-		steal.type("view js", function (options, success, error) {
-			var type = $view.types["." + options.type],
-				id = $view.toId(options.id);
 
-			options.text = "steal('" + (type.plugin || "can/view/" + options.type) + "',function(can){return " + "can.view.preload('" + id + "'," + options.text + ");\n})";
-			success();
-		})
-	}
-
-	//!steal-pluginify-remove-start
 	can.extend($view, {
 		register: function (info) {
 			this.types["." + info.suffix] = info;
 
-			if (window.steal) {
-				steal.type(info.suffix + " view js", function (options, success, error) {
-					var type = $view.types["." + options.type],
-						id = $view.toId(options.id + '');
 
-					options.text = type.script(id, options.text)
-					success();
-				})
-			};
 
 			$view[info.suffix] = function (id, text) {
 				if (!text) {
 					// Return a nameless renderer
-					return info.renderer(null, id);
+					var renderer = function () {
+						return $view.frag(renderer.render.apply(this, arguments));
+					}
+					renderer.render = function () {
+						var renderer = info.renderer(null, id);
+						return renderer.apply(renderer, arguments);
+					}
+					return renderer;
 				}
 
 				$view.preload(id, info.renderer(id, text));
@@ -2420,13 +2525,17 @@
 			$view.cached[id] = new can.Deferred().resolve(function (data, helpers) {
 				return renderer.call(data, data, helpers);
 			});
-			return function () {
-				return $view.frag(renderer.apply(this, arguments))
-			};
+
+			function frag() {
+				return $view.frag(renderer.apply(this, arguments));
+			}
+			// expose the renderer for mustache
+			frag.render = renderer;
+			return frag;
 		}
 
 	});
-	//!steal-pluginify-remove-end
+
 	// ## can/observe/compute/compute.js
 
 	// returns the
@@ -2470,12 +2579,12 @@
 	// Calls `callback(newVal, oldVal)` everytime an observed property
 	// called within `getterSetter` is changed and creates a new result of `getterSetter`.
 	// Also returns an object that can teardown all event handlers.
-		computeBinder = function (getterSetter, context, callback) {
+		computeBinder = function (getterSetter, context, callback, computeState) {
 			// track what we are observing
 			var observing = {},
 			// a flag indicating if this observe/attr pair is already bound
 				matched = true,
-			// the data to return
+			// the data to return 
 				data = {
 					// we will maintain the value while live-binding is taking place
 					value: undefined,
@@ -2492,6 +2601,11 @@
 
 			// when a property value is changed
 			var onchanged = function (ev) {
+				// If the compute is no longer bound (because the same change event led to an unbind)
+				// then do not call getValueAndBind, or we will leak bindings.
+				if (computeState && !computeState.bound) {
+					return;
+				}
 				if (ev.batchNum === undefined || ev.batchNum !== batchNum) {
 					// store the old value
 					var oldValue = data.value,
@@ -2605,15 +2719,19 @@
 
 		computed.isComputed = true;
 
-
+		can.cid(computed, "compute")
+		var computeState = {
+			bound: false
+		};
 
 		computed.bind = function (ev, handler) {
 			can.addEvent.apply(computed, arguments);
 			if (bindings === 0 && canbind) {
+				computeState.bound = true;
 				// setup live-binding
 				computedData = computeBinder(getterSetter, context || this, function (newValue, oldValue) {
 					can.Observe.triggerBatch(computed, "change", [newValue, oldValue])
-				});
+				}, computeState);
 			}
 			bindings++;
 		}
@@ -2623,6 +2741,7 @@
 			bindings--;
 			if (bindings === 0 && canbind) {
 				computedData.teardown();
+				computeState.bound = false;
 			}
 
 		};
@@ -2643,6 +2762,7 @@
 			tr: "tbody",
 			option: "select",
 			td: "tr",
+			th: "tr",
 			li: "ul"
 		},
 	// Returns a tagName to use as a temporary placeholder for live content
@@ -2660,6 +2780,7 @@
 					i++;
 				}
 			}
+			return '';
 		},
 		bracketNum = function (content) {
 			return (--content.split("{").length) - (--content.split("}").length);
@@ -2796,7 +2917,7 @@
 					buff.push(put_cmd, '"', clean(content), '"' + (bonus || '') + ');');
 				},
 			// A stack used to keep track of how we should end a bracket
-			// `}`.
+			// `}`.  
 			// Once we have a `<%= %>` with a `leftBracket`,
 			// we store how the file should end here (either `))` or `;`).
 				endStack = [],
@@ -2810,6 +2931,8 @@
 				tagName = '',
 			// stack of tagNames
 				tagNames = [],
+			// Pop from tagNames?
+				popTagName = false,
 			// Declared here.
 				bracketCount, i = 0,
 				token, tmap = this.tokenMap;
@@ -2826,7 +2949,7 @@
 						case tmap.returnLeft:
 							magicInTag = htmlTag && 1;
 						case tmap.commentLeft:
-							// A new line -- just add whatever content within a clean.
+							// A new line -- just add whatever content within a clean.  
 							// Reset everything.
 							startTag = token;
 							if (content.length) {
@@ -2867,13 +2990,13 @@
 						case '>':
 							htmlTag = 0;
 							// content.substr(-1) doesn't work in IE7/8
-							var emptyElement = content.substr(content.length - 1) == "/";
+							var emptyElement = content.substr(content.length - 1) == "/" || content.substr(content.length - 2) == "--";
 							// if there was a magic tag
-							// or it's an element that has text content between its tags,
+							// or it's an element that has text content between its tags, 
 							// but content is not other tags add a hookup
-							// TODO: we should only add `can.EJS.pending()` if there's a magic tag
+							// TODO: we should only add `can.EJS.pending()` if there's a magic tag 
 							// within the html tags.
-							if (magicInTag || tagToContentPropMap[tagNames[tagNames.length - 1]]) {
+							if (magicInTag || !popTagName && tagToContentPropMap[tagNames[tagNames.length - 1]]) {
 								// make sure / of /> is on the left of pending
 								if (emptyElement) {
 									put(content.substr(0, content.length - 1), ",can.view.pending(),\"/>\"");
@@ -2881,15 +3004,18 @@
 									put(content, ",can.view.pending(),\">\"");
 								}
 								content = '';
+								magicInTag = 0;
 							} else {
 								content += token;
 							}
 							// if it's a tag like <input/>
-							if (emptyElement) {
+							if (emptyElement || popTagName) {
 								// remove the current tag in the stack
 								tagNames.pop();
 								// set the current tag to the previous parent
 								tagName = tagNames[tagNames.length - 1];
+								// Don't pop next time
+								popTagName = false;
 							}
 							break;
 						case "'":
@@ -2911,10 +3037,11 @@
 							// Track the current tag
 							if (lastToken === '<') {
 								tagName = token.split(/\s/)[0];
-								if (tagName.indexOf("/") === 0 && tagNames.pop() === tagName.substr(1)) {
+								if (tagName.indexOf("/") === 0 && tagNames[tagNames.length - 1] === tagName.substr(1)) {
 									// set tagName to the last tagName
 									// if there are no more tagNames, we'll rely on getTag.
 									tagName = tagNames[tagNames.length - 1];
+									popTagName = true;
 								} else {
 									tagNames.push(tagName);
 								}
@@ -2953,7 +3080,7 @@
 												after: ";"
 											};
 
-										// If we are ending a returning block,
+										// If we are ending a returning block, 
 										// add the finish text which returns the result of the
 										// block.
 										if (last.before) {
@@ -2980,7 +3107,7 @@
 									var escaped = startTag === tmap.escapeLeft ? 1 : 0,
 										commands = {
 											insert: insert_cmd,
-											tagName: tagName,
+											tagName: getTag(tagName, tokens, i),
 											status: status()
 										};
 
@@ -2992,7 +3119,7 @@
 											content = helper.fn(content, commands);
 
 											// dont escape partials
-											if (helper.name.source == /^>[\s|\w]\w*/.source) {
+											if (helper.name.source == /^>[\s]*\w*/.source) {
 												escaped = 0;
 											}
 											break;
@@ -3059,7 +3186,7 @@
 	// text node expando test
 	var canExpando = true;
 	try {
-		document.createTextNode()._ = 0;
+		document.createTextNode('')._ = 0;
 	} catch (ex) {
 		canExpando = false;
 	}
@@ -3067,11 +3194,12 @@
 	var attrMap = {
 			"class": "className",
 			"value": "value",
+			"innerText": "innerText",
 			"textContent": "textContent"
 		},
 		tagMap = {
 			"": "span",
-			table: "tr",
+			table: "tbody",
 			tr: "td",
 			ol: "li",
 			ul: "li",
@@ -3084,7 +3212,7 @@
 		attributePlaceholder = '__!!__',
 		attributeReplace = /__!!__/g,
 		tagToContentPropMap = {
-			option: "textContent",
+			option: "textContent" in document.createElement("option") ? "textContent" : "innerText",
 			textarea: "value"
 		},
 		bool = can.each(["checked", "disabled", "readonly", "required"], function (n) {
@@ -3102,7 +3230,7 @@
 			if (prop) {
 				// set the value as true / false
 				el[prop] = can.inArray(attrName, bool) > -1 ? true : val;
-				if (prop === "value" && tagName === "input") {
+				if (prop === "value" && (tagName === "input" || tagName === "textarea")) {
 					el.defaultValue = val;
 				}
 			} else {
@@ -3111,7 +3239,7 @@
 		},
 		getAttr = function (el, attrName) {
 			// Default to a blank string for IE7/8
-			return (attrMap[attrName] ? el[attrMap[attrName]] : el.getAttribute(attrName)) || '';
+			return (attrMap[attrName] && el[attrMap[attrName]] ? el[attrMap[attrName]] : el.getAttribute(attrName)) || '';
 		},
 		removeAttr = function (el, attrName) {
 			if (can.inArray(attrName, bool) > -1) {
@@ -3121,7 +3249,7 @@
 			}
 		},
 		pendingHookups = [],
-	// Returns text content for anything other than a live-binding
+	// Returns text content for anything other than a live-binding 
 		contentText = function (input) {
 
 			// If it's a string, return.
@@ -3298,7 +3426,7 @@
 				// Return an element tag with a hookup in place of the content
 				return "<" + tag + can.view.hook(
 					escape ?
-						// If we are escaping, replace the parentNode with
+						// If we are escaping, replace the parentNode with 
 						// a text node who's value is `func`'s return value.
 
 
@@ -3312,8 +3440,18 @@
 							var parent = getParentNode(el, parentNode),
 								node = document.createTextNode(binding.value);
 
-							parent.insertBefore(node, el);
-							parent.removeChild(el);
+							// When iterating through an Observe.List with no DOM
+							// elements containing the individual items, the parent 
+							// is sometimes incorrect not the true parent of the 
+							// source element. (#153)
+							if (el.parentNode !== parent) {
+								parent = el.parentNode;
+								parent.insertBefore(node, el);
+								parent.removeChild(el);
+							} else {
+								parent.insertBefore(node, el);
+								parent.removeChild(el);
+							}
 							setupTeardownOnDestroy(parent);
 						} :
 						// If we are not escaping, replace the parentNode with a
@@ -3358,8 +3496,15 @@
 									nodeList = nodes;
 									can.view.registerNode(nodes);
 								} else {
-									can.remove(can.$(nodes));
+									// Update node Array's to point to new nodes
+									// and then remove the old nodes.
+									// It has to be in this order for Mootools
+									// and IE because somehow, after an element
+									// is removed from the DOM, it loses its
+									// expando values.
+									var nodesToRemove = can.makeArray(nodes);
 									can.view.replace(nodes, newNodes);
+									can.remove(can.$(nodesToRemove));
 								}
 							};
 							// nodes are the nodes that any updates will replace
@@ -3422,7 +3567,7 @@
 					// Get the attribute value.
 					var attr = getAttr(el, attributeName, contentProp),
 					// Split the attribute value by the template.
-					// Only split out the first __!!__ so if we have multiple hookups in the same attribute,
+					// Only split out the first __!!__ so if we have multiple hookups in the same attribute, 
 					// they will be put in the right spot on first render
 						parts = attr.split(attributePlaceholder),
 						goodParts = [],
@@ -3506,7 +3651,7 @@
 
 	// ## can/view/ejs/ejs.js
 	// ## ejs.js
-	// `can.EJS`
+	// `can.EJS`  
 	// _Embedded JavaScript Templates._
 	// Helper methods.
 	var extend = can.extend,
