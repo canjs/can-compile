@@ -69,7 +69,7 @@ module.exports = function (grunt) {
 	// Default task.
 	grunt.registerTask('default', ['cancompile', 'concat', 'uglify']);
 
-	grunt.loadTasks('../tasks');
+	grunt.loadTasks('can-compile');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 };
