@@ -18,8 +18,10 @@ describe('CanJS view compiler tests', function() {
 	};
 
 	it('compiles EJS, normalizes view ids', function(done) {
-		compiler.compile(__dirname + '/fixtures/view.ejs', normalizer,
-			function(error, output, id) {
+		compiler.compile({
+        filename: __dirname + '/fixtures/view.ejs',
+        normalizer: normalizer
+      }, function(error, output, id) {
 				expect(output).to.be(expectedEJS);
 				expect(id).to.be('fixtures_view_ejs');
 				done();
@@ -27,7 +29,10 @@ describe('CanJS view compiler tests', function() {
 	});
 
 	it('compiles Mustache, normalizes view ids', function(done) {
-		compiler.compile(__dirname + '/fixtures/view.mustache', normalizer,
+		compiler.compile({
+        filename: __dirname + '/fixtures/view.mustache',
+        normalizer: normalizer
+      },
 			function(error, output, id) {
 				expect(output).to.be(expectedMustache);
 				expect(id).to.be('fixtures_view_mustache');
