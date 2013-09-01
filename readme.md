@@ -87,6 +87,26 @@ compiler.compile('file.ejs', function(error, output) {
 });
 ```
 
+Passing an object as the first parameter allows you the following configuration options:
+
+- `filename` {String}: The name of the file to be compiled
+- `version` {String} (default: `latest`): The CanJS version to be used
+- `log` {Function}: A logger function (e..g `console.log.bind(console)`)
+- `normalizer` {Function}: A Function that returns the normalized path name
+
+```javascript
+compiler.compile({
+  filename: 'file.ejs',
+  log: console.log.bind(console),
+  normalizer: function(filename) {
+    return path.relative(__dirname, filename);
+  },
+  version: '1.1.6'
+}, function(error, output) {
+  output // -> compiled `file.ejs`
+});
+```
+
 ## Note
 
 Always make sure that the output file is in the same folder as the root level for the views that are being loaded.
@@ -96,6 +116,10 @@ that folder as the output file:
 > can-compile --out app/views.production.js
 
 ## Changelog
+
+__0.3.:__
+
+- Allows compilation for different CanJS versions
 
 __0.2.1:__
 

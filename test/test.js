@@ -4,51 +4,81 @@
 var expect = require('expect.js');
 var compiler = require('../lib');
 var path = require('path');
+var expected = {
+  '1.1.5': {
+    ejs: "can.EJS(function(_CONTEXT,_VIEW) { " +
+      "with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push(\"<h2>\");" +
+      "___v1ew.push(can.view.txt(1,'h2',0,this,function(){ " +
+      "return  message }));___v1ew.push(\"</h2>\");; return ___v1ew.join('')}} })",
+    mustache: 'can.Mustache(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];var ___c0nt3xt = this && this.___st4ck3d ? this : [];___c0nt3xt.___st4ck3d = true;var ___st4ck = function(context, self) {var s;if (arguments.length == 1 && context) {s = !context.___st4ck3d ? [context] : context;} else if (!context.___st4ck3d) {s = [self, context];} else if (context && context === self && context.___st4ck3d) {s = context.slice(0);} else {s = context && context.___st4ck3d ? context.concat([self]) : ___st4ck(context).concat([self]);}return (s.___st4ck3d = true) && s;};___v1ew.push("<h2>");___v1ew.push(can.view.txt(1,\'h2\',0,this,function(){ return can.Mustache.txt({context:___st4ck(___c0nt3xt,this),options:options},null,can.Mustache.get("message",{context:___st4ck(___c0nt3xt,this),options:options},false,false));}));___v1ew.push("</h2>");; return ___v1ew.join(\'\')}} })'
+  },
 
-describe('CanJS view compiler tests', function() {
-	var expectedEJS = "can.EJS(function(_CONTEXT,_VIEW) { " +
-		"with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push(\"<h2>\");" +
-		"___v1ew.push(can.view.txt(1,'h2',0,this,function(){ " +
-		"return  message }));___v1ew.push(\"</h2>\");; return ___v1ew.join('')}} })";
+  '1.1.2': {
+    ejs: "can.EJS(function(_CONTEXT,_VIEW) { " +
+      "with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push(\"<h2>\");" +
+      "___v1ew.push(can.view.txt(1,'h2',0,this,function(){ " +
+      "return  message }));___v1ew.push(\"</h2>\");; return ___v1ew.join('')}} })",
 
-	var expectedMustache = 'can.Mustache(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];var ___c0nt3xt = this && this.___st4ck3d ? this : [];___c0nt3xt.___st4ck3d = true;var ___st4ck = function(context, self) {var s;if (arguments.length == 1 && context) {s = !context.___st4ck3d ? [context] : context;} else if (!context.___st4ck3d) {s = [self, context];} else if (context && context === self && context.___st4ck3d) {s = context.slice(0);} else {s = context && context.___st4ck3d ? context.concat([self]) : ___st4ck(context).concat([self]);}return (s.___st4ck3d = true) && s;};___v1ew.push("<h2>");___v1ew.push(can.view.txt(1,\'h2\',0,this,function(){ return can.Mustache.txt({context:___st4ck(___c0nt3xt,this),options:options},null,can.Mustache.get("message",{context:___st4ck(___c0nt3xt,this),options:options},false,false));}));___v1ew.push("</h2>");; return ___v1ew.join(\'\')}} })';
+    mustache: "can.Mustache(function(_CONTEXT,_VIEW) { " +
+      "with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];var ___c0nt3xt = []; ___c0nt3xt.___st4ck = true;" +
+      "var ___st4ck = function(context, self) {var s;if (arguments.length == 1 && context) {" +
+      "s = !context.___st4ck ? [context] : context;} else {" +
+      "s = context && context.___st4ck ? context.concat([self]) : ___st4ck(context).concat([self]);}" +
+      "return (s.___st4ck = true) && s;};___v1ew.push(\"<h2>\");" +
+      "___v1ew.push(can.view.txt(1,'h2',0,this,function(){ " +
+      "return can.Mustache.txt(___st4ck(___c0nt3xt,this),null," +
+      "can.Mustache.get(\"message\",___st4ck(___c0nt3xt,this)));}));" +
+      "___v1ew.push(\"</h2>\");; return ___v1ew.join('')}} })"
+  }
+}
 
-	var normalizer = function(filename) {
-		return path.relative(__dirname, filename);
-	};
+expected['latest'] = expected['1.1.5'];
 
-	it('compiles EJS, normalizes view ids', function(done) {
-		compiler.compile({
-        filename: __dirname + '/fixtures/view.ejs',
-        normalizer: normalizer
-      }, function(error, output, id) {
-				expect(output).to.be(expectedEJS);
-				expect(id).to.be('fixtures_view_ejs');
-				done();
-			});
-	});
+var normalizer = function (filename) {
+  return path.relative(__dirname, filename);
+};
 
-	it('compiles Mustache, normalizes view ids', function(done) {
-		compiler.compile({
-        filename: __dirname + '/fixtures/view.mustache',
-        normalizer: normalizer
-      }, function(error, output, id) {
-				expect(output).to.be(expectedMustache);
-				expect(id).to.be('fixtures_view_mustache');
-				done();
-			});
-	});
+for(var version in expected) {
+  (function(version, expectedEJS, expectedMustache) {
+    describe('CanJS view compiler tests, version ' + version, function () {
+      it('compiles EJS, normalizes view ids', function (done) {
+        compiler.compile({
+          filename: __dirname + '/fixtures/view.ejs',
+          normalizer: normalizer,
+          version: version
+        }, function (error, output, id) {
+          expect(output).to.be(expectedEJS);
+          expect(id).to.be('fixtures_view_ejs');
+          done();
+        });
+      });
 
-	it('generates output text', function(done) {
-		compiler([__dirname + '/fixtures/view.ejs', __dirname + '/fixtures/view.mustache'], {},
-			function(err, result) {
-				var expected = '(function(window) {\n' +
-					"can.view.preload('test_fixtures_view_ejs'," + expectedEJS + ");\n" +
-					"can.view.preload('test_fixtures_view_mustache'," + expectedMustache + ");\n" +
-					'})(this);';
+      it('compiles Mustache, normalizes view ids', function (done) {
+        compiler.compile({
+          filename: __dirname + '/fixtures/view.mustache',
+          normalizer: normalizer,
+          version: version
+        }, function (error, output, id) {
+          expect(output).to.be(expectedMustache);
+          expect(id).to.be('fixtures_view_mustache');
+          done();
+        });
+      });
 
-				expect(result).to.be(expected);
-				done();
-			});
-	});
-});
+      it('generates output text', function (done) {
+        compiler([__dirname + '/fixtures/view.ejs', __dirname + '/fixtures/view.mustache'], {
+            version: version
+          }, function (err, result) {
+            var expected = '(function(window) {\n' +
+              "can.view.preload('test_fixtures_view_ejs'," + expectedEJS + ");\n" +
+              "can.view.preload('test_fixtures_view_mustache'," + expectedMustache + ");\n" +
+              '})(this);';
+
+            expect(result).to.be(expected);
+            done();
+          });
+      });
+    });
+  })(version, expected[version].ejs, expected[version].mustache);
+}
+
