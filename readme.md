@@ -19,9 +19,9 @@ Compile all EJS and Mustache files in the current folder and write them to `view
 
 > can-compile --out views.combined.js
 
-Compile `todo.ejs`, write it to `views.production.js`:
+Compile `todo.ejs` using CanJS version 1.1.2, write it to `views.production.js`:
 
-> can-compile todo.ejs
+> can-compile todo.ejs --can 1.1.2
 
 Compile all EJS files in the current directory and all subdirectories and `mustache/test.mustache`.
 Write the result to `views.combined.js`:
@@ -44,6 +44,13 @@ module.exports = function (grunt) {
 			dist: {
 				src: ['**/*.ejs', '**/*.mustache'],
 				out: 'production/views.production.js'
+			},
+			legacy: {
+			  src: ['**/*.ejs', '**/*.mustache'],
+        out: 'production/views.production.js',
+        options: {
+          version: '1.1.2'
+        }
 			}
 		},
 		concat: {

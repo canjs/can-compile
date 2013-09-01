@@ -7,7 +7,8 @@ var compiler = require('../lib');
 program.version(pkg.version)
 	.usage('[options] <files ...>')
 	.description(pkg.description)
-	.option('-o, --out [name]', 'The output file (default: views.js)', 'views.production.js')
+	.option('-o, --out [name]', 'The output file', 'views.production.js')
+	.option('-c, --can [version]', 'The CanJS version', 'latest')
 	.parse(process.argv);
 
 var files = [];
@@ -19,7 +20,10 @@ program.args.forEach(function(pattern) {
   files = files.concat(globsync.glob(pattern));
 });
 
-compiler(files, program, function(err, output, outfile) {
+compiler(files, {
+  out: program.out,
+  version: program.can
+}, function(err, output, outfile) {
   if(err) {
     console.error('There was an error: ' + err.message);
   } else {

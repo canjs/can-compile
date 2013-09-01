@@ -24,11 +24,13 @@ module.exports = function(grunt) {
 					exports: true
 				}
 			}
-		}
+		},
+    release: {}
 	});
 
 	// Default task.
 	grunt.registerTask('default', 'jshint');
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-release');
 };

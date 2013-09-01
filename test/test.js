@@ -1,4 +1,5 @@
 /*global describe, it */
+/*jshint -W083 */
 'use strict';
 
 var expect = require('expect.js');
@@ -30,7 +31,7 @@ var expected = {
       "can.Mustache.get(\"message\",___st4ck(___c0nt3xt,this)));}));" +
       "___v1ew.push(\"</h2>\");; return ___v1ew.join('')}} })"
   }
-}
+};
 
 expected['latest'] = expected['1.1.5'];
 
