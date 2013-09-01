@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 
 		compiler(files, options, function(err, output, outfile) {
 			if(err) {
-				return grunt.fail.fatal(err);
+				return done(err);
 			}
 
 			grunt.log.ok('Wrote file ' + outfile);
