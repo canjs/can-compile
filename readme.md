@@ -38,47 +38,47 @@ of a CanJS application:
 ```javascript
 module.exports = function (grunt) {
 
-	// Project configuration.
-	grunt.initConfig({
-		cancompile: {
-			dist: {
-				src: ['**/*.ejs', '**/*.mustache'],
-				out: 'production/views.production.js'
-			},
-			legacy: {
-			  src: ['**/*.ejs', '**/*.mustache'],
+  // Project configuration.
+  grunt.initConfig({
+    cancompile: {
+      dist: {
+        src: ['**/*.ejs', '**/*.mustache'],
+        out: 'production/views.production.js'
+      },
+      legacy: {
+        src: ['**/*.ejs', '**/*.mustache'],
         out: 'production/views.production.js',
         options: {
           version: '1.1.2'
         }
-			}
-		},
-		concat: {
-			dist: {
-				src: [
-					'../resources/js/can.jquery.js',
-					'../resources/js/can.view.mustache.js',
-					'js/app.js', // You app
-					'<%= cancompile.dist.out %>' // The compiled views
-				],
-				dest: 'production/production.js'
-			}
-		},
-		uglify: {
-			dist: {
-				files: {
-					'production/production.min.js': ['<%= concat.dist.dest %>']
-				}
-			}
-		}
-	});
+      }
+    },
+    concat: {
+      dist: {
+        src: [
+          '../resources/js/can.jquery.js',
+          '../resources/js/can.view.mustache.js',
+          'js/app.js', // You app
+          '<%= cancompile.dist.out %>' // The compiled views
+        ],
+        dest: 'production/production.js'
+      }
+    },
+    uglify: {
+      dist: {
+        files: {
+          'production/production.min.js': ['<%= concat.dist.dest %>']
+        }
+      }
+    }
+  });
 
-	// Default task.
-	grunt.registerTask('default', ['cancompile', 'concat', 'uglify']);
+  // Default task.
+  grunt.registerTask('default', ['cancompile', 'concat', 'uglify']);
 
-	grunt.loadNpmTasks('can-compile');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('can-compile');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 };
 ```
 
@@ -124,7 +124,7 @@ that folder as the output file:
 
 ## Changelog
 
-__0.3.:__
+__0.3.0:__
 
 - Allows compilation for different CanJS versions
 
