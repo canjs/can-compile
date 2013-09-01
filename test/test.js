@@ -32,8 +32,7 @@ describe('CanJS view compiler tests', function() {
 		compiler.compile({
         filename: __dirname + '/fixtures/view.mustache',
         normalizer: normalizer
-      },
-			function(error, output, id) {
+      }, function(error, output, id) {
 				expect(output).to.be(expectedMustache);
 				expect(id).to.be('fixtures_view_mustache');
 				done();
