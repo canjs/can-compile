@@ -114,6 +114,25 @@ compiler.compile({
 });
 ```
 
+## Loading with RequireJS
+
+To use your pre-compile views with [RequireJS](http://requirejs.org/) just shim the production file with
+`can/view/mustache` and/or `can/view/ejs` (depending on what you are using) as the depedencies and
+then load it before your main application file:
+
+
+```js
+require.config({
+  shim: {
+    'views.production': {
+      deps: ['can/view/ejs', 'can/view/mustache']
+    }
+  }
+});
+
+require(['views.production', 'app/index']);
+```
+
 ## Note
 
 Always make sure that the output file is in the same folder as the root level for the views that are being loaded.
