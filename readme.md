@@ -43,7 +43,10 @@ module.exports = function (grunt) {
     cancompile: {
       dist: {
         src: ['**/*.ejs', '**/*.mustache'],
-        out: 'production/views.production.js'
+        out: 'production/views.production.js',
+        options: {
+          wrapper: '!function() { <%= content %> }();'
+        }
       },
       legacy: {
         src: ['**/*.ejs', '**/*.mustache'],
@@ -116,21 +119,26 @@ compiler.compile({
 
 ## Loading with RequireJS
 
-To use your pre-compile views with [RequireJS](http://requirejs.org/) just shim the production file with
-`can/view/mustache` and/or `can/view/ejs` (depending on what you are using) as the depedencies and
-then load it before your main application file:
+To use your pre-compile views with [RequireJS](http://requirejs.org/) just add a custom `wrapper` in the options
+that uses the AMD definition to load `can/view/mustache` and/or `can/view/ejs` (depending on what you are using).
+In a Grunt task:
 
+```javascript
+module.exports = function (grunt) {
 
-```js
-require.config({
-  shim: {
-    'views.production': {
-      deps: ['can/view/ejs', 'can/view/mustache']
+  // Project configuration.
+  grunt.initConfig({
+    cancompile: {
+      dist: {
+        src: ['**/*.ejs', '**/*.mustache'],
+        out: 'production/views.production.js',
+        options: {
+          wrapper: 'define(["can/view/mustache"], function(can) { <%= content %> });'
+        }
+      }
     }
-  }
-});
-
-require(['views.production', 'app/index']);
+  });
+}
 ```
 
 ## Note
