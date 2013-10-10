@@ -9,7 +9,7 @@ program.version(pkg.version)
 	.description(pkg.description)
 	.option('-o, --out [name]', 'The output file', 'views.production.js')
 	.option('-c, --can [version]', 'The CanJS version', 'latest')
-	.option('-w, --wrapper "Mustache Template"', 'The output file wrapper')
+	.option('-w, --wrapper [Mustache Template]', 'The output file wrapper')
 	.parse(process.argv);
 
 var files = [];
