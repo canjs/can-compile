@@ -9,6 +9,7 @@ program.version(pkg.version)
 	.description(pkg.description)
 	.option('-o, --out [name]', 'The output file', 'views.production.js')
 	.option('-c, --can [version]', 'The CanJS version', 'latest')
+	.option('-w, --wrapper "Mustache Template"', 'The output file wrapper')
 	.parse(process.argv);
 
 var files = [];
@@ -22,6 +23,7 @@ program.args.forEach(function(pattern) {
 
 compiler(files, {
   out: program.out,
+  wrapper: program.wrapper,
   version: program.can
 }, function(err, output, outfile) {
   if(err) {

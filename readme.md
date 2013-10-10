@@ -45,7 +45,7 @@ module.exports = function (grunt) {
         src: ['**/*.ejs', '**/*.mustache'],
         out: 'production/views.production.js',
         options: {
-          wrapper: '!function() { <%= content %> }();'
+          wrapper: '!function() { {{{content}}} }();'
         }
       },
       legacy: {
@@ -133,7 +133,7 @@ module.exports = function (grunt) {
         src: ['**/*.mustache'],
         out: 'production/views.production.js',
         options: {
-          wrapper: 'define(["can/view/mustache"], function(can) { <%= content %> });'
+          wrapper: 'define(["can/view/mustache"], function(can) { {{{content}}} });'
         }
       }
     }
@@ -150,6 +150,10 @@ that folder as the output file:
 > can-compile --out app/views.production.js
 
 ## Changelog
+
+__0.3.2:__
+
+- Custom `wrapper` option uses [Handlebars](http://handlebarsjs.com/) because Underscore templates are useless in Grunt files
 
 __0.3.1:__
 

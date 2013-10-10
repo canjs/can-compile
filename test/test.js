@@ -69,7 +69,7 @@ for(var version in expected) {
       it('generates output text with wrapper', function (done) {
         compiler([__dirname + '/fixtures/view.ejs', __dirname + '/fixtures/view.mustache'], {
             version: version,
-            wrapper: '!function() { <%= content %> }();'
+            wrapper: '!function() { {{{content}}} }();'
           }, function (err, result) {
             var expected = '!function() { ' +
               "can.view.preload('test_fixtures_view_ejs'," + expectedEJS + ");\n" +
