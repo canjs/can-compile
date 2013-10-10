@@ -130,7 +130,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     cancompile: {
       dist: {
-        src: ['**/*.ejs', '**/*.mustache'],
+        src: ['**/*.mustache'],
         out: 'production/views.production.js',
         options: {
           wrapper: 'define(["can/view/mustache"], function(can) { <%= content %> });'
@@ -150,6 +150,10 @@ that folder as the output file:
 > can-compile --out app/views.production.js
 
 ## Changelog
+
+__0.3.1:__
+
+- Adds a custom `wrapper` option (uses [_.template](http://underscorejs.org/#template)).
 
 __0.3.0:__
 
