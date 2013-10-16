@@ -9,7 +9,10 @@ module.exports = function (grunt) {
 		var files = grunt.file.expand(this.data.src);
 
 		options.out = options.out || 'views.production.js';
-
+		if (options.options) {
+			options.wrapper = options.options.wrapper;
+			options.version = options.options.version;
+		}
 		compiler(files, options, function(err, output, outfile) {
 			if(err) {
 				return done(err);
