@@ -44,16 +44,12 @@ module.exports = function (grunt) {
       dist: {
         src: ['**/*.ejs', '**/*.mustache'],
         out: 'production/views.production.js',
-        options: {
-          wrapper: '!function() { {{{content}}} }();'
-        }
+        wrapper: '!function() { {{{content}}} }();'
       },
       legacy: {
         src: ['**/*.ejs', '**/*.mustache'],
         out: 'production/views.production.js',
-        options: {
-          version: '1.1.2'
-        }
+        version: '1.1.2'
       }
     },
     concat: {
@@ -132,9 +128,7 @@ module.exports = function (grunt) {
       dist: {
         src: ['**/*.mustache'],
         out: 'production/views.production.js',
-        options: {
-          wrapper: 'define(["can/view/mustache"], function(can) { {{{content}}} });'
-        }
+        wrapper: 'define(["can/view/mustache"], function(can) { {{{content}}} });'
       }
     }
   });
