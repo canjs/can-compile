@@ -145,6 +145,10 @@ that folder as the output file:
 
 ## Changelog
 
+__0.4.0:__
+
+- Verify CanJS 2.0.0 compatbility, load can.EJS which isn't in the core anymore
+
 __0.3.2:__
 
 - Custom `wrapper` option uses [Handlebars](http://handlebarsjs.com/) because Underscore templates are useless in Grunt files
