@@ -119,9 +119,8 @@ To use your pre-compile views with [RequireJS](http://requirejs.org/) just add a
 that uses the AMD definition to load `can/view/mustache` and/or `can/view/ejs` (depending on what you are using).
 In a Grunt task:
 
-```javascript
+```js
 module.exports = function (grunt) {
-
   // Project configuration.
   grunt.initConfig({
     cancompile: {
@@ -132,6 +131,23 @@ module.exports = function (grunt) {
       }
     }
   });
+}
+```
+
+To load the generated files only when running the [RequireJS optimizer r.js](http://requirejs.org/docs/optimization.html)
+define an empty module in development like:
+
+```js
+define('views', function() {});
+```
+
+And `require('views');` in you main application file.
+
+When running the optimizer map this module to the production build file:
+
+```js
+paths: {
+  views: 'views.production'
 }
 ```
 
