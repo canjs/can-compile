@@ -141,7 +141,7 @@ define an empty module in development like:
 define('views', function() {});
 ```
 
-And `require('views');` in you main application file.
+And `require('views');` in your main application file.
 
 When running the optimizer map this module to the production build file:
 
