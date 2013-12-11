@@ -39,7 +39,7 @@ var expected = {
   }
 };
 
-expected['latest'] = expected['2.0.0'];
+expected.latest = expected['2.0.0'];
 
 var normalizer = function (filename) {
   return path.relative(__dirname, filename);

@@ -2,35 +2,30 @@
 
 module.exports = function(grunt) {
 
-	// Project configuration.
-	grunt.initConfig({
-		jshint: {
-			all: {
-				src: ['grunt.js', 'tasks/**/*.js', 'lib/**/*.js', 'test/**/*.js'],
-				options: {
-					curly: true,
-					eqeqeq: true,
-					immed: true,
-					latedef: true,
-					newcap: true,
-					noarg: true,
-					sub: true,
-					undef: true,
-					boss: true,
-					eqnull: true,
-					node: true
-				},
-				globals: {
-					exports: true
-				}
-			}
-		},
+  // Project configuration.
+  grunt.initConfig({
+    simplemocha: {
+      options: {
+        timeout: 5000
+      },
+      app: {
+        src: ['test/**/*.js']
+      }
+    },
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc'
+      },
+      lib: ['lib/**/*.js', 'Gruntfile.js'],
+      test: ['test/**/*.js']
+    },
     release: {}
-	});
+  });
 
-	// Default task.
-	grunt.registerTask('default', 'jshint');
+  grunt.registerTask('default', 'test');
+  grunt.registerTask('test', [ 'jshint', 'simplemocha' ]);
 
-	grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-simple-mocha');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-release');
 };
