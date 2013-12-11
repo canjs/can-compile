@@ -30,6 +30,7 @@
     "expect.js": ">= 0.1.2",
     "mocha": "1.8.1",
     "grunt": "~ 0.4.0",
+    "grunt-cli": "~0.1.9",
     "grunt-contrib-jshint": ">= 0.1.1",
     "grunt-release": "~0.5.1",
     "grunt-simple-mocha": "~0.4.0"
