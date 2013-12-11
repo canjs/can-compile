@@ -1,5 +1,7 @@
 # can-compile
 
+[![Build Status](https://travis-ci.org/daffl/can-compile.png?branch=master)](https://travis-ci.org/daffl/can-compile)
+
 NodeJS module that compiles [CanJS](http://canjs.us/) EJS and Mustache views into a single JavaScript file for lightning fast
 production apps.
 
@@ -161,6 +163,10 @@ that folder as the output file:
 
 ## Changelog
 
+__0.4.1:__
+
+- Merged [#10](https://github.com/daffl/can-compile/pull/10): Allow for setting a custom normalizer
+
 __0.4.0:__
 
 - Verify CanJS 2.0.0 compatbility, load can.EJS which isn't in the core anymore
@@ -191,5 +197,3 @@ __0.2.0:__
 __0.1.0:__
 
 - Initial release
-
-[![Build Status](https://travis-ci.org/daffl/can-compile.png?branch=master)](https://travis-ci.org/daffl/can-compile)
