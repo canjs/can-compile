@@ -165,6 +165,10 @@ that folder as the output file:
 
 ## Changelog
 
+__0.5.0:__
+
+- Merged [#11](https://github.com/daffl/can-compile/pull/11): Implement can.Component/tag-support
+
 __0.4.1:__
 
 - Merged [#10](https://github.com/daffl/can-compile/pull/10): Allow for setting a custom normalizer
