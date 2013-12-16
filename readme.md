@@ -46,7 +46,8 @@ module.exports = function (grunt) {
       dist: {
         src: ['**/*.ejs', '**/*.mustache'],
         out: 'production/views.production.js',
-        wrapper: '!function() { {{{content}}} }();'
+        wrapper: '!function() { {{{content}}} }();',
+        tags: ['editor', 'my-component']
       },
       legacy: {
         src: ['**/*.ejs', '**/*.mustache'],
@@ -101,6 +102,7 @@ Passing an object as the first parameter allows you the following configuration 
 - `version` {String} (default: `latest`): The CanJS version to be used
 - `log` {Function}: A logger function (e..g `console.log.bind(console)`)
 - `normalizer` {Function}: A Function that returns the normalized path name
+- `tags` {Array}: A list of all your can.Component tags. They need to be registered in order to pre-compile views properly.
 
 ```javascript
 compiler.compile({
