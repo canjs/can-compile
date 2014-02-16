@@ -84,6 +84,40 @@ module.exports = function (grunt) {
 };
 ```
 
+## Gulp task
+
+It is also quite easy to get this up and running with your production build using Gulp.  The following example compiles all mustache templates in the client/app directory into a file at public/assets/views.production.js. 
+
+```javascript
+var gulp = require('gulp'),
+    glob = require('glob'),
+    compiler = require('can-compile');
+
+// Compile CanJS TEMPLATES
+gulp.task('app-views', function() {
+  glob('client/app/**/*.mustache', function (er, files) {
+    var options = {
+      out: 'public/assets/views.production.js',
+      tags: ['editor', 'my-component']
+    };
+    compiler(files, options, function(error, output, outfile) {
+      console.log('Finished compiling', outfile);
+    });
+  });
+});
+
+// Rerun the task when a template changes
+gulp.task('watch', function () {
+  gulp.watch('client/app/**/*.mustache', ['app-views']);
+});
+
+// The default task (called when you run `gulp` from cli)
+gulp.task('default', [
+    'app-views',
+    'watch'
+]);
+```
+
 ## Programmatically
 
 You can compie files directly like this:
