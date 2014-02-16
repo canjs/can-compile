@@ -113,8 +113,8 @@ gulp.task('watch', function () {
 
 // The default task (called when you run `gulp` from cli)
 gulp.task('default', [
-  'main-views',
-	'watch'
+    'app-views',
+    'watch'
 ]);
 ```
 
