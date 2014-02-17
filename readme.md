@@ -91,7 +91,7 @@ It is also quite easy to get this up and running with your production build usin
 ```javascript
 
 var gulp = require('gulp'),
-    compiler = require('can-compile');
+    compilerGulp = require('can-compile/tasks/gulp.js');
 
 var options = {
   src: ['client/app/main/**/*.mustache'],
@@ -100,9 +100,9 @@ var options = {
 };
 
 // Creates a task called 'app-views'.  Must pass in same gulp instance.
-compiler.gulp.task('app-views', options, gulp);
+compilerGulp.task('app-views', options, gulp);
 // Creates a task called 'app-views-watch'. Optional, but convenient.
-compiler.gulp.watch('app-views', options, gulp);
+compilerGulp.watch('app-views', options, gulp);
 
 // The default task (called when you run `gulp` from cli)
 gulp.task('default', [

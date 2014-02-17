@@ -1,6 +1,6 @@
 'use strict';
 
-var compile = require('../lib/entry.js'),
+var compile = require('../lib/index.js'),
   glob = require('glob');
 
 /**
