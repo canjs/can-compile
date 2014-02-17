@@ -119,7 +119,7 @@ Run `gulp` in the command line to build.
 
 ## Programmatically
 
-You can compie files directly like this:
+You can compile individual files directly like this:
 
 ```javascript
 var compiler = require('can-compile');
