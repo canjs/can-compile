@@ -111,9 +111,14 @@ gulp.task('default', [
 ]);
 ```
 
-You'll need gulp installed globally:
+You'll need gulp installed globally and locally:
 
     sudo npm install gulp -g
+    npm install gulp
+
+And a local copy of can-compile
+
+    npm install can-compile
 
 Run `gulp` in the command line to build.
 
