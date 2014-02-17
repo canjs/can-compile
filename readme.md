@@ -86,37 +86,36 @@ module.exports = function (grunt) {
 
 ## Gulp task
 
-It is also quite easy to get this up and running with your production build using Gulp.  The following example compiles all mustache templates in the client/app directory into a file at public/assets/views.production.js. 
+It is also quite easy to get this up and running with your production build using Gulp.  By placing the following example in your gulpfile.js, all mustache templates in the client/app directory will be compiled into a file at public/assets/views.production.js.
 
 ```javascript
+
 var gulp = require('gulp'),
-    glob = require('glob'),
     compiler = require('can-compile');
 
-// Compile CanJS TEMPLATES
-gulp.task('app-views', function() {
-  glob('client/app/**/*.mustache', function (er, files) {
-    var options = {
-      out: 'public/assets/views.production.js',
-      tags: ['editor', 'my-component']
-    };
-    compiler(files, options, function(error, output, outfile) {
-      console.log('Finished compiling', outfile);
-    });
-  });
-});
+var options = {
+  src: ['client/app/main/**/*.mustache'],
+  out: 'public/assets/views.production.js',
+  tags: ['editor', 'my-component']
+};
 
-// Rerun the task when a template changes
-gulp.task('watch', function () {
-  gulp.watch('client/app/**/*.mustache', ['app-views']);
-});
+// Creates a task called 'app-views'.  Must pass in same gulp instance.
+compiler.gulp.task('app-views', options, gulp);
+// Creates a task called 'app-views-watch'. Optional, but convenient.
+compiler.gulp.watch('app-views', options, gulp);
 
 // The default task (called when you run `gulp` from cli)
 gulp.task('default', [
     'app-views',
-    'watch'
+    'app-views-watch'
 ]);
 ```
+
+You'll need gulp installed globally:
+
+    sudo npm install gulp -g
+
+Run `gulp` in the command line to build.
 
 ## Programmatically
 
