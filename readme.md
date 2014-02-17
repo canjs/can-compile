@@ -91,7 +91,7 @@ It is also quite easy to get this up and running with your production build usin
 ```javascript
 
 var gulp = require('gulp'),
-    compilerGulp = require('can-compile/tasks/gulp.js');
+    compilerGulp = require('can-compile/gulp.js');
 
 var options = {
   src: ['client/app/main/**/*.mustache'],
