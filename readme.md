@@ -94,7 +94,7 @@ var gulp = require('gulp'),
     compilerGulp = require('can-compile/gulp.js');
 
 var options = {
-  src: ['client/app/main/**/*.mustache'],
+  src: ['client/app/**/*.mustache'],
   out: 'public/assets/views.production.js',
   tags: ['editor', 'my-component']
 };
