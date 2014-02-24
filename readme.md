@@ -203,6 +203,10 @@ that folder as the output file:
 
 ## Changelog
 
+__0.6.0:__
+
+- Added Gulp task ([#16](https://github.com/daffl/can-compile/pull/16), [#17](https://github.com/daffl/can-compile/pull/17), [#18](https://github.com/daffl/can-compile/pull/18))
+
 __0.5.0:__
 
 - Merged [#11](https://github.com/daffl/can-compile/pull/11): Implement can.Component/tag-support
