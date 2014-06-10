@@ -1,19 +1,16 @@
 {
-  "name" : "can-compile-example",
-  "description" : "An example for can-compile",
-  "version" : "0.1.0",
-  "homepage" : "http://daffl.github.com/can-compile",
-  "author" : {
-    "name" : "David Luecke",
-    "email" : "daff@neyeon.com",
-    "web" : "http://daffl.github.com"
+  "name": "can-compile-example",
+  "version": "0.6.0",
+  "description": "CanJS TodoMVC example using can-comile",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engines" : {
-    "node" : "~0.8"
-  },
-  "devDependencies" : {
-    "grunt": "~ 0.4.0",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-concat": "*"
+  "author": "David Luecke <daff@neyeon.com",
+  "license": "MIT",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-uglify": "^0.4.0"
   }
 }

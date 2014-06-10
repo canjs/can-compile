@@ -17,9 +17,9 @@ or a list of [filename patterns](https://github.com/isaacs/minimatch) and writes
 
 __Examples:__
 
-Compile all EJS and Mustache files in the current folder and write them to `views.combined.js`:
+Compile all EJS and Mustache files in the current folder and write them to `views.combined.js` using version 2.1.0:
 
-> can-compile --out views.combined.js
+> can-compile --out views.combined.js --can 2.1.0
 
 Compile `todo.ejs` using CanJS version 1.1.2, write it to `views.production.js`:
 
@@ -28,7 +28,7 @@ Compile `todo.ejs` using CanJS version 1.1.2, write it to `views.production.js`:
 Compile all EJS files in the current directory and all subdirectories and `mustache/test.mustache`.
 Write the result to `views.combined.js`:
 
-> can-compile **/*.ejs mustache/test.mustache --out views.combined.js
+> can-compile **/*.ejs mustache/test.mustache --out views.combined.js --can 2.0.0
 
 ## Grunt task
 
@@ -43,16 +43,23 @@ module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
     cancompile: {
+      options: {
+        version: '2.1.1'
+      },
       dist: {
+        options: {
+          wrapper: '!function() { {{{content}}} }();',
+          tags: ['editor', 'my-component']
+        },
         src: ['**/*.ejs', '**/*.mustache'],
-        out: 'production/views.production.js',
-        wrapper: '!function() { {{{content}}} }();',
-        tags: ['editor', 'my-component']
+        dest: 'production/views.production.js'
       },
       legacy: {
         src: ['**/*.ejs', '**/*.mustache'],
         out: 'production/views.production.js',
-        version: '1.1.2'
+        options: {
+          version: '1.1.2'
+        }
       }
     },
     concat: {
@@ -61,7 +68,7 @@ module.exports = function (grunt) {
           '../resources/js/can.jquery.js',
           '../resources/js/can.view.mustache.js',
           'js/app.js', // You app
-          '<%= cancompile.dist.out %>' // The compiled views
+          '<%= cancompile.dist.dest %>' // The compiled views
         ],
         dest: 'production/production.js'
       }
@@ -94,6 +101,7 @@ var gulp = require('gulp'),
     compilerGulp = require('can-compile/gulp.js');
 
 var options = {
+  version: '2.0.0',
   src: ['client/app/**/*.mustache'],
   out: 'public/assets/views.production.js',
   tags: ['editor', 'my-component']
@@ -129,7 +137,7 @@ You can compile individual files directly like this:
 ```javascript
 var compiler = require('can-compile');
 
-compiler.compile('file.ejs', function(error, output) {
+compiler.compile({ filename: 'file.ejs', version: '2.0.1' }, function(error, output) {
   output // -> compiled `file.ejs`
 });
 ```
@@ -137,7 +145,7 @@ compiler.compile('file.ejs', function(error, output) {
 Passing an object as the first parameter allows you the following configuration options:
 
 - `filename` {String}: The name of the file to be compiled
-- `version` {String} (default: `latest`): The CanJS version to be used
+- `version` {String}: The CanJS version to be used
 - `log` {Function}: A logger function (e..g `console.log.bind(console)`)
 - `normalizer` {Function}: A Function that returns the normalized path name
 - `tags` {Array}: A list of all your can.Component tags. They need to be registered in order to pre-compile views properly.
@@ -149,7 +157,7 @@ compiler.compile({
   normalizer: function(filename) {
     return path.relative(__dirname, filename);
   },
-  version: '1.1.6'
+  version: '2.0.7'
 }, function(error, output) {
   output // -> compiled `file.ejs`
 });
@@ -165,11 +173,13 @@ In a Grunt task:
 module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
+    options: {
+      wrapper: 'define(["can/view/mustache"], function(can) { {{{content}}} });'
+    },
     cancompile: {
       dist: {
-        src: ['**/*.mustache'],
-        out: 'production/views.production.js',
-        wrapper: 'define(["can/view/mustache"], function(can) { {{{content}}} });'
+        files: ['**/*.mustache'],
+        dest: 'production/views.production.js',
       }
     }
   });
@@ -199,9 +209,15 @@ Always make sure that the output file is in the same folder as the root level fo
 So if your CanJS applications HTML file is in the `app` folder within the current directory use a filename within
 that folder as the output file:
 
-> can-compile --out app/views.production.js
+> can-compile --out app/views.production.js --can 2.0.0
 
 ## Changelog
+
+__0.7.0:__
+
+- Made `version` flag mandatory (caused unexpected behaviour after CanJS updates)
+- Added CanJS 2.1 compatibility ([#20](https://github.com/daffl/can-compile/issues/20), [#21](https://github.com/daffl/can-compile/issues/21), [#22](https://github.com/daffl/can-compile/issues/22))
+- Fixed Grunt options ([#8](https://github.com/daffl/can-compile/pull/8))
 
 __0.6.0:__
 

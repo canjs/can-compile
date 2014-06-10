@@ -5,10 +5,11 @@ var compiler = require('../lib');
 module.exports = function (grunt) {
 	grunt.task.registerMultiTask('cancompile', 'Compile CanJS EJS and Mustache views', function () {
 		var done = this.async();
-		var options = this.data;
-		var files = grunt.file.expand(this.data.src);
+		var options = this.options();
+    var file = this.files[0];
+    var files = file.src;
 
-		options.out = options.out || 'views.production.js';
+		options.out = file.dest || 'views.production.js';
 
 		compiler(files, options, function(err, output, outfile) {
 			if(err) {
