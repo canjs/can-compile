@@ -56,7 +56,7 @@ module.exports = function (grunt) {
       },
       legacy: {
         src: ['**/*.ejs', '**/*.mustache'],
-        out: 'production/views.production.js',
+        dest: 'production/views.production.js',
         options: {
           version: '1.1.2'
         }
@@ -136,13 +136,17 @@ You can compile individual files directly like this:
 
 ```javascript
 var compiler = require('can-compile');
+var options = {
+  filename: 'file.ejs',
+  version: '2.0.1'
+};
 
-compiler.compile({ filename: 'file.ejs', version: '2.0.1' }, function(error, output) {
+compiler.compile(options, function(error, output) {
   output // -> compiled `file.ejs`
 });
 ```
 
-Passing an object as the first parameter allows you the following configuration options:
+The options object allows the following configuration options:
 
 - `filename` {String}: The name of the file to be compiled
 - `version` {String}: The CanJS version to be used
