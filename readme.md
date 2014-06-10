@@ -215,6 +215,7 @@ that folder as the output file:
 
 __0.7.0:__
 
+- Added up to date TodoMVC based [example](https://github.com/daffl/can-compile/tree/master/example)
 - Made `version` flag mandatory (caused unexpected behaviour after CanJS updates)
 - Added CanJS 2.1 compatibility ([#20](https://github.com/daffl/can-compile/issues/20), [#21](https://github.com/daffl/can-compile/issues/21), [#22](https://github.com/daffl/can-compile/issues/22))
 - Fixed Grunt options ([#8](https://github.com/daffl/can-compile/pull/8))
