@@ -100,7 +100,7 @@ for(var version in expected) {
             version: version,
             wrapper: '!function() { {{{content}}} }();'
           }, function(err, result) {
-            expect(result).to.be("!function() { can.view.stache('test_fixtures_view_stache', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
+            expect(result).to.be("!function() { can.stache('test_fixtures_view_stache', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
             done();
           });
         });

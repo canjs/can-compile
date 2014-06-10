@@ -8,7 +8,7 @@ program.version(pkg.version)
 	.usage('[options] <files ...>')
 	.description(pkg.description)
 	.option('-o, --out [name]', 'The output file', 'views.production.js')
-	.option('-c, --can [version]', 'The CanJS version', 'latest')
+	.option('-c, --can [version]', 'The CanJS version')
 	.option('-w, --wrapper [Mustache Template]', 'The output file wrapper')
 	.parse(process.argv);
 
