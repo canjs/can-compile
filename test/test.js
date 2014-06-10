@@ -36,10 +36,14 @@ var expected = {
     ejs: "can.EJS(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\nfunction(){ return  message }));\n___v1ew.push(\n\"</h2>\");; return ___v1ew.join('')}} })",
 
     mustache: "can.Mustache(function(scope,options) { var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\nfunction(){ return can.Mustache.txt(\n{scope:scope,options:options},\nnull,{get:\"message\"})}));\n___v1ew.push(\n\"</h2>\");; return ___v1ew.join('') })"
+  },
+
+  '2.1.0': {
+    ejs: "can.EJS(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\nfunction(){ return  message }));\n___v1ew.push(\n\"</h2>\");; return ___v1ew.join('')}} })",
+
+    mustache: "can.Mustache(function(scope,options) { var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\ncan.Mustache.txt(\n{scope:scope,options:options},\nnull,{get:\"message\"})));___v1ew.push(\n\"</h2>\");; return ___v1ew.join('') })"
   }
 };
-
-expected.latest = expected['2.0.0'];
 
 var normalizer = function (filename) {
   return path.relative(__dirname, filename);
@@ -47,15 +51,18 @@ var normalizer = function (filename) {
 
 for(var version in expected) {
   (function(version, expectedEJS, expectedMustache) {
+    var is21 = version.indexOf('2.1') === 0;
+    var preloadMethod = is21 ? 'preloadStringRenderer' : 'preload';
+
     describe('CanJS view compiler tests, version ' + version, function () {
       it('compiles EJS, normalizes view ids', function (done) {
         compiler.compile({
           filename: __dirname + '/fixtures/view.ejs',
           normalizer: normalizer,
           version: version
-        }, function (error, output, id) {
+        }, function (error, output, options) {
           expect(output).to.be(expectedEJS);
-          expect(id).to.be('fixtures_view_ejs');
+          expect(options.id).to.be('fixtures_view_ejs');
           done();
         });
       });
@@ -65,9 +72,9 @@ for(var version in expected) {
           filename: __dirname + '/fixtures/view.mustache',
           normalizer: normalizer,
           version: version
-        }, function (error, output, id) {
+        }, function (error, output, options) {
           expect(output).to.be(expectedMustache);
-          expect(id).to.be('fixtures_view_mustache');
+          expect(options.id).to.be('fixtures_view_mustache');
           done();
         });
       });
@@ -78,14 +85,26 @@ for(var version in expected) {
             wrapper: '!function() { {{{content}}} }();'
           }, function (err, result) {
             var expected = '!function() { ' +
-              "can.view.preload('test_fixtures_view_ejs'," + expectedEJS + ");\n" +
-              "can.view.preload('test_fixtures_view_mustache'," + expectedMustache + "); " +
+              "can.view." + preloadMethod + "('test_fixtures_view_ejs'," + expectedEJS + ");\n" +
+              "can.view." + preloadMethod + "('test_fixtures_view_mustache'," + expectedMustache + "); " +
               '}();';
 
             expect(result).to.be(expected);
             done();
           });
       });
+
+      if(is21) {
+        it('Adds plain text for unkown templating engines', function(done) {
+          compiler([__dirname + '/fixtures/view.stache'], {
+            version: version,
+            wrapper: '!function() { {{{content}}} }();'
+          }, function(err, result) {
+            expect(result).to.be("!function() { can.view.stache('test_fixtures_view_stache', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
+            done();
+          });
+        });
+      }
     });
   })(version, expected[version].ejs, expected[version].mustache);
 }
