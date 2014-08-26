@@ -182,7 +182,7 @@ module.exports = function (grunt) {
     },
     cancompile: {
       dist: {
-        files: ['**/*.mustache'],
+        src: ['**/*.mustache'],
         dest: 'production/views.production.js',
       }
     }
