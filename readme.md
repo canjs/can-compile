@@ -173,6 +173,7 @@ To use your pre-compile views with [RequireJS](http://requirejs.org/) just add a
 that uses the AMD definition to load `can/view/mustache` and/or `can/view/ejs` (depending on what you are using).
 In a Grunt task:
 
+Mustache:
 ```js
 module.exports = function (grunt) {
   // Project configuration.
@@ -182,7 +183,25 @@ module.exports = function (grunt) {
     },
     cancompile: {
       dist: {
-        src: ['**/*.mustache'],
+        src: ['**/*.mustache', '!node_modules/**/*.mustache'],
+        dest: 'production/views.production.js',
+      }
+    }
+  });
+}
+```
+
+Stache:
+```js
+module.exports = function (grunt) {
+  // Project configuration.
+  grunt.initConfig({
+    options: {
+      wrapper: 'define(["can", "can/view/stache"], function(can) { {{{content}}} });'
+    },
+    cancompile: {
+      dist: {
+        src: ['**/*.stache', '!node_modules/**/*.stache'],
         dest: 'production/views.production.js',
       }
     }
