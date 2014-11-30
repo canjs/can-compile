@@ -1,7 +1,7 @@
 'use strict';
 
-var compile = require('./lib/index.js'),
-  glob = require('glob');
+var compile = require('./lib/index.js');
+var glob = require('glob');
 
 /**
  * Create a new gulp task to compile CanJS templates.
@@ -10,7 +10,7 @@ var compile = require('./lib/index.js'),
  * @param  {gulp} pass in your gulp instance, so it registers the task correctly.
  */
 exports.task = function(taskName, options, gulp){
-  
+
   gulp.task(taskName, function() {
 
     // Glob needs a string, but compiler needs an array.

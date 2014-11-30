@@ -236,6 +236,11 @@ that folder as the output file:
 
 ## Changelog
 
+__0.7.1:__
+
+- Gulp task - Error: Cannot find module 'glob' ([#27](https://github.com/daffl/can-compile/issues/27))
+- Also use [glob](https://github.com/isaacs/node-glob) module in CLI
+
 __0.7.0:__
 
 - Added up to date TodoMVC based [example](https://github.com/daffl/can-compile/tree/master/example)

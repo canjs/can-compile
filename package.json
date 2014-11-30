@@ -33,15 +33,14 @@
     "grunt-cli": "~0.1.9",
     "grunt-contrib-jshint": ">= 0.1.1",
     "grunt-release": "~0.5.1",
-    "grunt-simple-mocha": "~0.4.0",
-    "glob": "~3.2.8"
+    "grunt-simple-mocha": "~0.4.0"
   },
   "dependencies": {
-    "glob-whatev": "0.1.8",
     "commander": "1.1.1",
     "async": "0.1.22",
     "jsdom": "~0.5.6",
-    "handlebars": "~1.0.12"
+    "handlebars": "~1.0.12",
+    "glob": "~3.2.8"
   },
   "peerDependencies": {
     "grunt": "~0.4.0"
