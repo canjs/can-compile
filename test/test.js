@@ -46,7 +46,7 @@ var expected = {
 };
 
 var normalizer = function (filename) {
-  return path.relative(__dirname, filename);
+  return path.relative(__dirname, filename).replace(/\\/g,"/");
 };
 
 for(var version in expected) {
@@ -75,6 +75,19 @@ for(var version in expected) {
         }, function (error, output, options) {
           expect(output).to.be(expectedMustache);
           expect(options.id).to.be('fixtures_view_mustache');
+          done();
+        });
+      });
+      
+      it('compiles Mustache, normalizes view ids and use alternative file extension', function (done) {
+        compiler.compile({
+          filename: __dirname + '/fixtures/view.mst',
+          normalizer: normalizer,
+          extensions: { 'mst' : 'mustache' },
+          version: version
+        }, function (error, output, options) {
+          expect(output).to.be(expectedMustache);
+          expect(options.id).to.be('fixtures_view_mst');
           done();
         });
       });

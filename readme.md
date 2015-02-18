@@ -153,6 +153,8 @@ The options object allows the following configuration options:
 - `log` {Function}: A logger function (e..g `console.log.bind(console)`)
 - `normalizer` {Function}: A Function that returns the normalized path name
 - `tags` {Array}: A list of all your can.Component tags. They need to be registered in order to pre-compile views properly.
+- `extensions` {Object}: An object to map custom file extensions to the standard extension (e.g. `{ 'mst' : 'mustache' }`)
+- `viewAttributes` {Array}: A list of attribute names (RegExp or String), used for additional behavior for an attribute in a view (can.view.attr)
 
 ```javascript
 compiler.compile({

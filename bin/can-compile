@@ -10,6 +10,8 @@ program.version(pkg.version)
 	.option('-o, --out [name]', 'The output file', 'views.production.js')
 	.option('-c, --can [version]', 'The CanJS version')
 	.option('-w, --wrapper [Mustache Template]', 'The output file wrapper')
+	.option('-e, --extensions [File extensions]', 'View file extension mapping')
+	.option('-a, --viewAttributes [View attributes]', 'CanJS view attributes (can.view.attr)')
 	.parse(process.argv);
 
 var files = [];
@@ -24,6 +26,8 @@ program.args.forEach(function(pattern) {
 compiler(files, {
   out: program.out,
   wrapper: program.wrapper,
+  extensions: program.extensions,
+  viewAttributes: program.viewAttributes,
   version: program.can
 }, function(err, output, outfile) {
   if(err) {
