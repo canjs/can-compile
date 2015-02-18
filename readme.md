@@ -238,6 +238,10 @@ that folder as the output file:
 
 ## Changelog
 
+__0.8.0:__
+
+- Fixed path normalize on Windows, Alternative file extension, can.view.attr ([#32](https://github.com/daffl/can-compile/pull/32))
+
 __0.7.1:__
 
 - Gulp task - Error: Cannot find module 'glob' ([#27](https://github.com/daffl/can-compile/issues/27))
