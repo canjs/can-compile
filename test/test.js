@@ -5,6 +5,7 @@
 var expect = require('expect.js');
 var compiler = require('../lib');
 var path = require('path');
+var semver = require('semver');
 var expected = {
   '1.1.5': {
     ejs: "can.EJS(function(_CONTEXT,_VIEW) { " +
@@ -51,7 +52,7 @@ var normalizer = function (filename) {
 
 for(var version in expected) {
   (function(version, expectedEJS, expectedMustache) {
-    var is21 = version.indexOf('2.1') === 0;
+    var is21 = semver.satisfies(version, '>=2.1.x');
     var preloadMethod = is21 ? 'preloadStringRenderer' : 'preload';
 
     describe('CanJS view compiler tests, version ' + version, function () {
@@ -78,7 +79,7 @@ for(var version in expected) {
           done();
         });
       });
-      
+
       it('compiles Mustache, normalizes view ids and use alternative file extension', function (done) {
         compiler.compile({
           filename: __dirname + '/fixtures/view.mst',
@@ -109,11 +110,11 @@ for(var version in expected) {
 
       if(is21) {
         it('Adds plain text for unkown templating engines', function(done) {
-          compiler([__dirname + '/fixtures/view.stache'], {
+          compiler([__dirname + '/fixtures/view.unknown'], {
             version: version,
             wrapper: '!function() { {{{content}}} }();'
           }, function(err, result) {
-            expect(result).to.be("!function() { can.stache('test_fixtures_view_stache', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
+            expect(result).to.be("!function() { can.unknown('test_fixtures_view_unknown', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
             done();
           });
         });
