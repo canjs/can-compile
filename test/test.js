@@ -4,6 +4,7 @@
 
 var expect = require('expect.js');
 var compiler = require('../lib');
+var resolveScripts = require('../lib/resolveScripts');
 var path = require('path');
 var semver = require('semver');
 var expected = {
@@ -122,4 +123,45 @@ for(var version in expected) {
     });
   })(version, expected[version].ejs, expected[version].mustache);
 }
+
+describe('resolving scripts', function(){
+  describe('with default paths', function(){
+    it('uses proper version of jquery', function(){
+      expect(resolveScripts('1.1.5')).to.contain('http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js', '1.1.5 includes jQuery 1.11.2');
+      expect(resolveScripts('2.1.3')).to.contain('http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', '2.1.3 includes jQuery 2.1.3');
+    });
+    it('includes the right plugins', function(){
+      expect(resolveScripts('1.1.5')).to.contain('http://canjs.com/release/1.1.5/can.view.mustache.js', '1.1.5 includes mustache');
+      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.ejs.js', '2.1.3 includes ejs');
+      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.stache.js', '2.1.3 includes stache');
+    });
+  });
+    describe('with user defined paths', function(){
+    it('uses proper version of jquery', function(){
+      var paths = {
+        jquery: 'my/path/to/jquery.js'
+      };
+      var expected = path.resolve(process.cwd(), path.normalize('my/path/to/jquery.js'));
+
+      expect(resolveScripts('1.1.5', paths)).to.contain(expected);
+      expect(resolveScripts('2.1.3', paths)).to.contain(expected);
+    });
+    it('includes the right plugins', function(){
+      var paths = {
+        mustache: 'my/path/to/mustache.js',
+        ejs: 'my/path/to/ejs.js',
+        stache: 'my/path/to/stache.js'
+      };
+      var expected = {
+        mustache: path.resolve(process.cwd(), path.normalize('my/path/to/mustache.js')),
+        ejs: path.resolve(process.cwd(), path.normalize('my/path/to/ejs.js')),
+        stache: path.resolve(process.cwd(), path.normalize('my/path/to/stache.js'))
+      };
+
+      expect(resolveScripts('1.1.5', paths)).to.contain(expected.mustache, '1.1.5 includes mustache');
+      expect(resolveScripts('2.1.3', paths)).to.contain(expected.ejs, '2.1.3 includes ejs');
+      expect(resolveScripts('2.1.3', paths)).to.contain(expected.stache, '2.1.3 includes stache');
+    });
+  });
+});
 
