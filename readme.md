@@ -155,6 +155,7 @@ The options object allows the following configuration options:
 - `tags` {Array}: A list of all your can.Component tags. They need to be registered in order to pre-compile views properly.
 - `extensions` {Object}: An object to map custom file extensions to the standard extension (e.g. `{ 'mst' : 'mustache' }`)
 - `viewAttributes` {Array}: A list of attribute names (RegExp or String), used for additional behavior for an attribute in a view (can.view.attr)
+- `paths` an object with `ejs`, `mustache` or `stache` and a `jquery` property pointing to files of existing versions or CanJS and jQuery instead of the CDN links.
 
 ```javascript
 compiler.compile({
