@@ -43,7 +43,8 @@ var expected = {
   '2.1.0': {
     ejs: "can.EJS(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\nfunction(){ return  message }));\n___v1ew.push(\n\"</h2>\");; return ___v1ew.join('')}} })",
 
-    mustache: "can.Mustache(function(scope,options) { var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\ncan.Mustache.txt(\n{scope:scope,options:options},\nnull,{get:\"message\"})));___v1ew.push(\n\"</h2>\");; return ___v1ew.join('') })"
+    mustache: "can.Mustache(function(scope,options) { var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\ncan.Mustache.txt(\n{scope:scope,options:options},\nnull,{get:\"message\"})));___v1ew.push(\n\"</h2>\");; return ___v1ew.join('') })",
+    stache: "can.stache(\"<h2>{{message}}</h2>\""
   }
 };
 
@@ -52,7 +53,7 @@ var normalizer = function (filename) {
 };
 
 for(var version in expected) {
-  (function(version, expectedEJS, expectedMustache) {
+  (function(version, expectedEJS, expectedMustache, expectedStache) {
     var is21 = semver.satisfies(version, '>=2.1.x');
     var preloadMethod = is21 ? 'preloadStringRenderer' : 'preload';
 
@@ -80,6 +81,19 @@ for(var version in expected) {
           done();
         });
       });
+
+      if(expectedStache) {
+        it('compiles Stache', function (done) {
+          compiler.compile({
+            filename: __dirname + '/fixtures/view.stache',
+            normalizer: normalizer,
+            version: version
+          }, function (error, output) {
+            expect(output).to.be(expectedStache);
+            done();
+          });
+        });
+      }
 
       it('compiles Mustache, normalizes view ids and use alternative file extension', function (done) {
         compiler.compile({
