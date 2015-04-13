@@ -1,7 +1,7 @@
 {
   "name": "can-compile",
   "description": "Compile CanJS Mustache and EJS views for lightning fast production apps",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "homepage": "http://daffl.github.com/can-compile",
   "author": {
     "name": "David Luecke",
@@ -41,7 +41,7 @@
     "jsdom": "^3.0.0",
     "handlebars": "~1.0.12",
     "glob": "~3.2.8",
-    "semver" : "~4.3.1"
+    "semver": "~4.3.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.0"
