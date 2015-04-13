@@ -238,6 +238,10 @@ that folder as the output file:
 
 ## Changelog
 
+__0.9.0:__
+
+- Allowing user to supply paths for jquery and can ([#36](https://github.com/daffl/can-compile/pull/36), [#30](https://github.com/daffl/can-compile/issues/30))
+
 __0.8.0:__
 
 - Fixed path normalize on Windows, Alternative file extension, can.view.attr ([#32](https://github.com/daffl/can-compile/pull/32))
