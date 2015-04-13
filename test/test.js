@@ -4,7 +4,9 @@
 
 var expect = require('expect.js');
 var compiler = require('../lib');
+var resolveScripts = require('../lib/resolveScripts');
 var path = require('path');
+var semver = require('semver');
 var expected = {
   '1.1.5': {
     ejs: "can.EJS(function(_CONTEXT,_VIEW) { " +
@@ -41,7 +43,8 @@ var expected = {
   '2.1.0': {
     ejs: "can.EJS(function(_CONTEXT,_VIEW) { with(_VIEW) { with (_CONTEXT) {var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\nfunction(){ return  message }));\n___v1ew.push(\n\"</h2>\");; return ___v1ew.join('')}} })",
 
-    mustache: "can.Mustache(function(scope,options) { var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\ncan.Mustache.txt(\n{scope:scope,options:options},\nnull,{get:\"message\"})));___v1ew.push(\n\"</h2>\");; return ___v1ew.join('') })"
+    mustache: "can.Mustache(function(scope,options) { var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\ncan.Mustache.txt(\n{scope:scope,options:options},\nnull,{get:\"message\"})));___v1ew.push(\n\"</h2>\");; return ___v1ew.join('') })",
+    stache: "can.stache(\"<h2>{{message}}</h2>\""
   }
 };
 
@@ -50,8 +53,8 @@ var normalizer = function (filename) {
 };
 
 for(var version in expected) {
-  (function(version, expectedEJS, expectedMustache) {
-    var is21 = version.indexOf('2.1') === 0;
+  (function(version, expectedEJS, expectedMustache, expectedStache) {
+    var is21 = semver.satisfies(version, '>=2.1.x');
     var preloadMethod = is21 ? 'preloadStringRenderer' : 'preload';
 
     describe('CanJS view compiler tests, version ' + version, function () {
@@ -78,7 +81,20 @@ for(var version in expected) {
           done();
         });
       });
-      
+
+      if(expectedStache) {
+        it('compiles Stache', function (done) {
+          compiler.compile({
+            filename: __dirname + '/fixtures/view.stache',
+            normalizer: normalizer,
+            version: version
+          }, function (error, output) {
+            expect(output).to.be(expectedStache);
+            done();
+          });
+        });
+      }
+
       it('compiles Mustache, normalizes view ids and use alternative file extension', function (done) {
         compiler.compile({
           filename: __dirname + '/fixtures/view.mst',
@@ -109,11 +125,11 @@ for(var version in expected) {
 
       if(is21) {
         it('Adds plain text for unkown templating engines', function(done) {
-          compiler([__dirname + '/fixtures/view.stache'], {
+          compiler([__dirname + '/fixtures/view.unknown'], {
             version: version,
             wrapper: '!function() { {{{content}}} }();'
           }, function(err, result) {
-            expect(result).to.be("!function() { can.stache('test_fixtures_view_stache', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
+            expect(result).to.be("!function() { can.unknown('test_fixtures_view_unknown', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
             done();
           });
         });
@@ -121,4 +137,45 @@ for(var version in expected) {
     });
   })(version, expected[version].ejs, expected[version].mustache);
 }
+
+describe('resolving scripts', function(){
+  describe('with default paths', function(){
+    it('uses proper version of jquery', function(){
+      expect(resolveScripts('1.1.5')).to.contain('http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js', '1.1.5 includes jQuery 1.11.2');
+      expect(resolveScripts('2.1.3')).to.contain('http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', '2.1.3 includes jQuery 2.1.3');
+    });
+    it('includes the right plugins', function(){
+      expect(resolveScripts('1.1.5')).to.contain('http://canjs.com/release/1.1.5/can.view.mustache.js', '1.1.5 includes mustache');
+      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.ejs.js', '2.1.3 includes ejs');
+      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.stache.js', '2.1.3 includes stache');
+    });
+  });
+    describe('with user defined paths', function(){
+    it('uses proper version of jquery', function(){
+      var paths = {
+        jquery: 'my/path/to/jquery.js'
+      };
+      var expected = path.resolve(process.cwd(), path.normalize('my/path/to/jquery.js'));
+
+      expect(resolveScripts('1.1.5', paths)).to.contain(expected);
+      expect(resolveScripts('2.1.3', paths)).to.contain(expected);
+    });
+    it('includes the right plugins', function(){
+      var paths = {
+        mustache: 'my/path/to/mustache.js',
+        ejs: 'my/path/to/ejs.js',
+        stache: 'my/path/to/stache.js'
+      };
+      var expected = {
+        mustache: path.resolve(process.cwd(), path.normalize('my/path/to/mustache.js')),
+        ejs: path.resolve(process.cwd(), path.normalize('my/path/to/ejs.js')),
+        stache: path.resolve(process.cwd(), path.normalize('my/path/to/stache.js'))
+      };
+
+      expect(resolveScripts('1.1.5', paths)).to.contain(expected.mustache, '1.1.5 includes mustache');
+      expect(resolveScripts('2.1.3', paths)).to.contain(expected.ejs, '2.1.3 includes ejs');
+      expect(resolveScripts('2.1.3', paths)).to.contain(expected.stache, '2.1.3 includes stache');
+    });
+  });
+});
 
