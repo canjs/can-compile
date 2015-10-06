@@ -33,15 +33,19 @@
     "grunt-cli": "~0.1.9",
     "grunt-contrib-jshint": ">= 0.1.1",
     "grunt-release": "~0.5.1",
-    "grunt-simple-mocha": "~0.4.0"
+    "grunt-simple-mocha": "~0.4.0",
+    "gulp": "^3.9.0",
+    "stream-assert": "^2.0.3"
   },
   "dependencies": {
-    "commander": "1.1.1",
     "async": "0.1.22",
-    "jsdom": "^3.0.0",
-    "handlebars": "~1.0.12",
+    "commander": "1.1.1",
     "glob": "~3.2.8",
-    "semver" : "~4.3.1"
+    "gulp-util": "^3.0.6",
+    "handlebars": "~1.0.12",
+    "jsdom": "^3.0.0",
+    "semver": "~4.3.1",
+    "through2": "^2.0.0"
   },
   "peerDependencies": {
     "grunt": "~0.4.0"
