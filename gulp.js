@@ -19,14 +19,6 @@ function runCompile(file, options) {
       latestFile;
 
   options = options || {};
-
-  if (typeof file === 'string') {
-    fileName = file;
-  } else if (typeof file.path === 'string') {
-    fileName = path.basename(file.path);
-  } else {
-    throw new PluginError('can-compile', 'Missing path in file options for can-compile');
-  }
   
   function bufferStream (file, enc, cb) {
     // ignore empty files
