@@ -9,27 +9,6 @@ With NodeJS installed, just run NPM:
 
 > npm install can-compile -g
 
-## Command line
-
-The `can-compile` command line tool takes a list of files (by default all `*.ejs` and `*.mustache` files in the current folder)
-or a list of [filename patterns](https://github.com/isaacs/minimatch) and writes the compiled views into an `out` file
-(default: `views.production.js`).
-
-__Examples:__
-
-Compile all EJS and Mustache files in the current folder and write them to `views.combined.js` using version 2.1.0:
-
-> can-compile --out views.combined.js --can 2.1.0
-
-Compile `todo.ejs` using CanJS version 1.1.2, write it to `views.production.js`:
-
-> can-compile todo.ejs --can 1.1.2
-
-Compile all EJS files in the current directory and all subdirectories and `mustache/test.mustache`.
-Write the result to `views.combined.js`:
-
-> can-compile **/*.ejs mustache/test.mustache --out views.combined.js --can 2.0.0
-
 ## Grunt task
 
 can-compile also comes with a [Grunt](http://gruntjs.com) task so you can easily make it part of your production build.
@@ -93,22 +72,40 @@ module.exports = function (grunt) {
 
 ## Gulp task
 
-It is also quite easy to get this up and running with your production build using Gulp.  By placing the following example in your gulpfile.js, all mustache templates in the client/app directory will be compiled into a file at public/assets/views.production.js.
+It is also quite easy to get this up and running with your production build using Gulp.  By placing the following example in your gulpfile.js, all mustache templates in the client/app directory will be compiled into a file at `public/assets/views.production.js`.
 
 ```javascript
-
-var gulp = require('gulp'),
-    compilerGulp = require('can-compile/gulp.js');
+var gulp = require('gulp');
+var compilerGulp = require('can-compile/gulp.js');
 
 var options = {
-  version: '2.0.0',
+	version: '2.2.7'
+};
+    
+gulp.task("app-views", function () {
+	return gulp.src('client/app/**/*.mustache')
+		.pipe( compilerGulp('views.production.js', options) )
+		.pipe( gulp.dest('public/assets') );
+});
+```
+**Or you can use available helpers to create your task and watch your files:**
+
+```javascript
+var gulp = require('gulp');
+var compilerGulp = require('can-compile/gulp.js');
+    
+var options = {
+  version: '2.2.7',
   src: ['client/app/**/*.mustache'],
   out: 'public/assets/views.production.js',
   tags: ['editor', 'my-component']
 };
 
-// Creates a task called 'app-views'.  Must pass in same gulp instance.
-compilerGulp.task('app-views', options, gulp);
+// Creates a task called 'app-views'.
+// You must pass in the same gulp instance.
+// You may also pass optional task dependencies (ex. 'clean')
+compilerGulp.task('app-views', options, gulp, ['clean']);
+
 // Creates a task called 'app-views-watch'. Optional, but convenient.
 compilerGulp.watch('app-views', options, gulp);
 
@@ -170,6 +167,27 @@ compiler.compile({
 });
 ```
 
+## Command line
+
+The `can-compile` command line tool takes a list of files (by default all `*.ejs` and `*.mustache` files in the current folder)
+or a list of [filename patterns](https://github.com/isaacs/minimatch) and writes the compiled views into an `out` file
+(default: `views.production.js`).
+
+__Examples:__
+
+Compile all EJS and Mustache files in the current folder and write them to `views.combined.js` using version 2.1.0:
+
+> can-compile --out views.combined.js --can 2.1.0
+
+Compile `todo.ejs` using CanJS version 1.1.2, write it to `views.production.js`:
+
+> can-compile todo.ejs --can 1.1.2
+
+Compile all EJS files in the current directory and all subdirectories and `mustache/test.mustache`.
+Write the result to `views.combined.js`:
+
+> can-compile **/*.ejs mustache/test.mustache --out views.combined.js --can 2.0.0
+
 ## Loading with RequireJS
 
 To use your pre-compile views with [RequireJS](http://requirejs.org/) just add a custom `wrapper` in the options
@@ -177,7 +195,8 @@ that uses the AMD definition to load `can/view/mustache` and/or `can/view/ejs` (
 In a Grunt task:
 
 Mustache:
-```js
+
+```javascript
 module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
@@ -195,7 +214,8 @@ module.exports = function (grunt) {
 ```
 
 Stache:
-```js
+
+```javascript
 module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
