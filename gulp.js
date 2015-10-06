@@ -3,13 +3,30 @@
 var compile = require('./lib/index.js');
 var path = require('path');
 var through = require("through2");
+var gutil = require('gulp-util');
+var File = gutil.File;
+var PluginError = gutil.PluginError;
 
-
+// file can be a vinyl file object or a string
+// when a string it will construct a new one
 function runCompile(file, options) {
+  if (!file) {
+    throw new PluginError('can-compile', 'Missing file option for can-compile');
+  }
+
   var templatePaths = [],
-    latestFile;
+      fileName,
+      latestFile;
 
   options = options || {};
+
+  if (typeof file === 'string') {
+    fileName = file;
+  } else if (typeof file.path === 'string') {
+    fileName = path.basename(file.path);
+  } else {
+    throw new PluginError('can-compile', 'Missing path in file options for can-compile');
+  }
   
   function bufferStream (file, enc, cb) {
     // ignore empty files
@@ -20,7 +37,7 @@ function runCompile(file, options) {
 
     // can't do streams yet
     if (file.isStream()) {
-      this.emit('error', new PluginError('can-compile',  'Streaming not supported'));
+      this.emit('error', new PluginError('can-compile',  'Streaming not supported for can-compile'));
       cb();
       return;
     }
@@ -45,7 +62,10 @@ function runCompile(file, options) {
     }
 
     compile(templatePaths, options, function (err, result) {
-      if (err) return cb(err);
+      if (err) {
+        self.emit('error', new PluginError('can-compile',  err));
+        return cb(err);
+      }
 
       var joinedFile;
 

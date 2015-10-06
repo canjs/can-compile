@@ -3,10 +3,16 @@
 'use strict';
 
 var expect = require('expect.js');
+var assert = require('stream-assert');
 var compiler = require('../lib');
 var resolveScripts = require('../lib/resolveScripts');
+var fs = require('fs');
 var path = require('path');
 var semver = require('semver');
+var gulp = require('gulp');
+var gulpCompile = require('../gulp');
+var File = require('gulp-util').File;
+
 var expected = {
   '1.1.5': {
     ejs: "can.EJS(function(_CONTEXT,_VIEW) { " +
@@ -150,7 +156,8 @@ describe('resolving scripts', function(){
       expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.stache.js', '2.1.3 includes stache');
     });
   });
-    describe('with user defined paths', function(){
+
+  describe('with user defined paths', function(){
     it('uses proper version of jquery', function(){
       var paths = {
         jquery: 'my/path/to/jquery.js'
@@ -175,6 +182,91 @@ describe('resolving scripts', function(){
       expect(resolveScripts('1.1.5', paths)).to.contain(expected.mustache, '1.1.5 includes mustache');
       expect(resolveScripts('2.1.3', paths)).to.contain(expected.ejs, '2.1.3 includes ejs');
       expect(resolveScripts('2.1.3', paths)).to.contain(expected.stache, '2.1.3 includes stache');
+    });
+  });
+});
+
+describe('gulp task', function () {
+  it('should throw when no file argument is specified', function () {
+    expect(function () {
+      gulpCompile();
+    }).to.throwError();
+  });
+
+  it('should ignore null files', function (done) {
+    var stream = gulpCompile('test.js');
+    stream
+      .pipe(assert.length(0))
+      .pipe(assert.end(done));
+    stream.write(new File());
+    stream.end();
+  });
+
+  it('should emit error on streamed file', function (done) {
+    gulp.src(__dirname + '/fixtures/*', { buffer: false })
+      .pipe(gulpCompile('test.js'))
+      .on('error', function (err) {
+        expect(err.message).to.be('Streaming not supported for can-compile');
+        done();
+      });
+  });
+
+  it('should compile a single file', function (done) {
+    gulp.src(__dirname + '/fixtures/view.ejs')
+      .pipe(gulpCompile('test.js', {version: '2.2.7'}))
+      .pipe(assert.length(1))
+      .pipe(assert.first(function (file) {
+        var result = file.contents.toString();
+        expect(result).to.contain('can.EJS');
+        expect(result).not.to.contain('can.Mustache');
+        expect(result).not.to.contain('can.stache');
+      }))
+      .pipe(assert.end(done));
+  });
+
+  it('should compile multiple different files', function (done) {
+    gulp.src(__dirname + '/fixtures/*')
+      .pipe(gulpCompile('test.js', {version: '2.2.7'}))
+      .pipe(assert.length(1))
+      .pipe(assert.first(function (file) {
+        var result = file.contents.toString();
+        expect(result).to.contain('can.EJS');
+        expect(result).to.contain('can.Mustache');
+        expect(result).to.contain('can.stache');
+      }))
+      .pipe(assert.end(done));
+  });
+
+  describe('"task" helper', function () {
+    // clean up any generated files
+    after(function(done){
+      fs.unlink(__dirname + '/views.production.js', done);
+    });
+
+    it('should register a gulp task', function () {
+      gulpCompile.task('cancompile', {}, gulp);
+      expect(Object.keys(gulp.tasks)).to.contain('cancompile');
+    });
+
+    it('should include any dependencies', function () {
+      gulpCompile.task('cancompile', {}, gulp, ['clean']);
+      expect(gulp.tasks.cancompile.dep).to.contain('clean');
+    });
+
+    it('should extract the file path/name from the "out" option', function (done) {
+      gulpCompile.task('cancompile', { 
+        src: __dirname + '/fixtures/*',
+        out: __dirname + '/views.production.js',
+        version: '2.2.7'
+      }, gulp);
+
+      gulp.tasks.cancompile.fn()
+        .pipe(assert.length(1))
+        .pipe(assert.first(function (file) {
+          expect(file.base).to.be(__dirname);
+          expect(path.basename(file.path)).to.be('views.production.js');
+        }))
+        .pipe(assert.end(done));
     });
   });
 });
