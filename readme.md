@@ -9,6 +9,28 @@ With NodeJS installed, just run NPM:
 
 > npm install can-compile -g
 
+## Command line
+
+The `can-compile` command line tool takes a list of files (by default all `*.ejs` and `*.mustache` files in the current folder)
+or a list of [filename patterns](https://github.com/isaacs/minimatch) and writes the compiled views into an `out` file
+(default: `views.production.js`).
+
+__Examples:__
+
+Compile all EJS and Mustache files in the current folder and write them to `views.combined.js` using version 2.1.0:
+
+> can-compile --out views.combined.js --can 2.1.0
+
+Compile `todo.ejs` using CanJS version 1.1.2, write it to `views.production.js`:
+
+> can-compile todo.ejs --can 1.1.2
+
+Compile all EJS files in the current directory and all subdirectories and `mustache/test.mustache`.
+Write the result to `views.combined.js`:
+
+> can-compile **/*.ejs mustache/test.mustache --out views.combined.js --can 2.0.0
+
+
 ## Grunt task
 
 can-compile also comes with a [Grunt](http://gruntjs.com) task so you can easily make it part of your production build.
@@ -166,27 +188,6 @@ compiler.compile({
   output // -> compiled `file.ejs`
 });
 ```
-
-## Command line
-
-The `can-compile` command line tool takes a list of files (by default all `*.ejs` and `*.mustache` files in the current folder)
-or a list of [filename patterns](https://github.com/isaacs/minimatch) and writes the compiled views into an `out` file
-(default: `views.production.js`).
-
-__Examples:__
-
-Compile all EJS and Mustache files in the current folder and write them to `views.combined.js` using version 2.1.0:
-
-> can-compile --out views.combined.js --can 2.1.0
-
-Compile `todo.ejs` using CanJS version 1.1.2, write it to `views.production.js`:
-
-> can-compile todo.ejs --can 1.1.2
-
-Compile all EJS files in the current directory and all subdirectories and `mustache/test.mustache`.
-Write the result to `views.combined.js`:
-
-> can-compile **/*.ejs mustache/test.mustache --out views.combined.js --can 2.0.0
 
 ## Loading with RequireJS
 
