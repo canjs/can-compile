@@ -39,11 +39,11 @@
   },
   "dependencies": {
     "async": "0.1.22",
+    "can-simple-window": "^0.1.0",
     "commander": "1.1.1",
     "glob": "~3.2.8",
-    "gulp-util": "^3.0.6",
+    "gulp-util": "^3.0.7",
     "handlebars": "~1.0.12",
-    "jsdom": "^3.0.0",
     "semver": "~4.3.1",
     "through2": "^2.0.0"
   },
