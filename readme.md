@@ -103,7 +103,7 @@ var compilerGulp = require('can-compile/gulp.js');
 var options = {
 	version: '2.2.7'
 };
-    
+
 gulp.task("app-views", function () {
 	return gulp.src('client/app/**/*.mustache')
 		.pipe( compilerGulp('views.production.js', options) )
@@ -115,7 +115,7 @@ gulp.task("app-views", function () {
 ```javascript
 var gulp = require('gulp');
 var compilerGulp = require('can-compile/gulp.js');
-    
+
 var options = {
   version: '2.2.7',
   src: ['client/app/**/*.mustache'],
@@ -259,6 +259,11 @@ that folder as the output file:
 > can-compile --out app/views.production.js --can 2.0.0
 
 ## Changelog
+
+__0.10.0:__
+
+- Move to can-simple-dom instead of JSDOM ([#45](https://github.com/canjs/can-compile/pull/45))
+- Make Gulp task pipeable ([#46](https://github.com/canjs/can-compile/pull/46))
 
 __0.9.0:__
 
