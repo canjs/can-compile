@@ -1,7 +1,7 @@
 {
   "name": "can-compile",
   "description": "Compile CanJS Mustache and EJS views for lightning fast production apps",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "homepage": "http://daffl.github.com/can-compile",
   "license": "MIT",
   "author": {
