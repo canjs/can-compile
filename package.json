@@ -13,9 +13,6 @@
   "scripts": {
     "test": "grunt test"
   },
-  "engines": {
-    "node": "~0.10"
-  },
   "repository": {
     "type": "git",
     "url": "git@github.com:daffl/can-compile.git"
