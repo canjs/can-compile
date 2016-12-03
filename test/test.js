@@ -151,9 +151,9 @@ describe('resolving scripts', function(){
       expect(resolveScripts('2.1.3')).to.contain('http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', '2.1.3 includes jQuery 2.1.3');
     });
     it('includes the right plugins', function(){
-      expect(resolveScripts('1.1.5')).to.contain('http://canjs.com/release/1.1.5/can.view.mustache.js', '1.1.5 includes mustache');
-      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.ejs.js', '2.1.3 includes ejs');
-      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.stache.js', '2.1.3 includes stache');
+      expect(resolveScripts('1.1.5')).to.contain('http://v2.canjs.com/release/1.1.5/can.view.mustache.js', '1.1.5 includes mustache');
+      expect(resolveScripts('2.1.3')).to.contain('http://v2.canjs.com/release/2.1.3/can.ejs.js', '2.1.3 includes ejs');
+      expect(resolveScripts('2.1.3')).to.contain('http://v2.canjs.com/release/2.1.3/can.stache.js', '2.1.3 includes stache');
     });
   });
 
@@ -254,7 +254,7 @@ describe('gulp task', function () {
     });
 
     it('should extract the file path/name from the "out" option', function (done) {
-      gulpCompile.task('cancompile', { 
+      gulpCompile.task('cancompile', {
         src: __dirname + '/fixtures/*',
         out: __dirname + '/views.production.js',
         version: '2.2.7'
@@ -270,4 +270,3 @@ describe('gulp task', function () {
     });
   });
 });
-
