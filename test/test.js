@@ -52,6 +52,7 @@ var expected = {
     mustache: "can.Mustache(function(scope,options) { var ___v1ew = [];___v1ew.push(\n\"<h2>\");___v1ew.push(\ncan.view.txt(\n1,\n'h2',\n0,\nthis,\ncan.Mustache.txt(\n{scope:scope,options:options},\nnull,{get:\"message\"})));___v1ew.push(\n\"</h2>\");; return ___v1ew.join('') })",
     stache: "can.stache(\"<h2>{{message}}</h2>\""
   }
+
 };
 
 var normalizer = function (filename) {
@@ -117,6 +118,7 @@ for(var version in expected) {
       it('generates output text with wrapper', function (done) {
         compiler([__dirname + '/fixtures/view.ejs', __dirname + '/fixtures/view.mustache'], {
             version: version,
+            out: "test",
             wrapper: '!function() { {{{content}}} }();'
           }, function (err, result) {
             var expected = '!function() { ' +
@@ -133,6 +135,7 @@ for(var version in expected) {
         it('Adds plain text for unkown templating engines', function(done) {
           compiler([__dirname + '/fixtures/view.unknown'], {
             version: version,
+            out: "test",
             wrapper: '!function() { {{{content}}} }();'
           }, function(err, result) {
             expect(result).to.be("!function() { can.unknown('test_fixtures_view_unknown', \"<h2 class=\\\"something\\\">{{message}}</h2>\"); }();");
@@ -151,9 +154,10 @@ describe('resolving scripts', function(){
       expect(resolveScripts('2.1.3')).to.contain('http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', '2.1.3 includes jQuery 2.1.3');
     });
     it('includes the right plugins', function(){
-      expect(resolveScripts('1.1.5')).to.contain('http://canjs.com/release/1.1.5/can.view.mustache.js', '1.1.5 includes mustache');
-      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.ejs.js', '2.1.3 includes ejs');
-      expect(resolveScripts('2.1.3')).to.contain('http://canjs.com/release/2.1.3/can.stache.js', '2.1.3 includes stache');
+      expect(resolveScripts('1.1.5')).to.contain('http://v2.canjs.com/release/1.1.5/can.view.mustache.js', '1.1.5 includes mustache');
+     // expect(resolveScripts('2.1.3')).to.contain('http://v2.canjs.com/release/2.1.3/can.view.mustache.system.js', '2.1.3 includes mustache with .system');
+      expect(resolveScripts('2.1.3')).to.contain('http://v2.canjs.com/release/2.1.3/can.ejs.js', '2.1.3 includes ejs');
+      expect(resolveScripts('2.1.3')).to.contain('http://v2.canjs.com/release/2.1.3/can.stache.js', '2.1.3 includes stache');
     });
   });
 
@@ -213,7 +217,7 @@ describe('gulp task', function () {
 
   it('should compile a single file', function (done) {
     gulp.src(__dirname + '/fixtures/view.ejs')
-      .pipe(gulpCompile('test.js', {version: '2.2.7'}))
+      .pipe(gulpCompile('test.js', {version: '2.2.7', out: "test.out" }))
       .pipe(assert.length(1))
       .pipe(assert.first(function (file) {
         var result = file.contents.toString();
@@ -226,7 +230,7 @@ describe('gulp task', function () {
 
   it('should compile multiple different files', function (done) {
     gulp.src(__dirname + '/fixtures/*')
-      .pipe(gulpCompile('test.js', {version: '2.2.7'}))
+      .pipe(gulpCompile('test.js', {version: '2.2.7', out: "test.out" }))
       .pipe(assert.length(1))
       .pipe(assert.first(function (file) {
         var result = file.contents.toString();
@@ -244,12 +248,12 @@ describe('gulp task', function () {
     });
 
     it('should register a gulp task', function () {
-      gulpCompile.task('cancompile', {}, gulp);
+      gulpCompile.task('cancompile', { out: "test.out" }, gulp);
       expect(Object.keys(gulp.tasks)).to.contain('cancompile');
     });
 
     it('should include any dependencies', function () {
-      gulpCompile.task('cancompile', {}, gulp, ['clean']);
+      gulpCompile.task('cancompile', { out: "test.out" }, gulp, ['clean']);
       expect(gulp.tasks.cancompile.dep).to.contain('clean');
     });
 
