@@ -260,6 +260,11 @@ that folder as the output file:
 
 ## Changelog
 
+__0.11.0:__
+
+- Point to the rehomed CanJS 1.x and 2.x libraries (on v2.canjs.com)
+- Select correct Mustache path based on 1.x or 2.x (was renamed to can.view.mustache.system.js in 2.x)
+
 __0.10.0:__
 
 - Move to can-simple-dom instead of JSDOM ([#45](https://github.com/canjs/can-compile/pull/45))
