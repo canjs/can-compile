@@ -2,12 +2,12 @@
   "name": "can-compile",
   "description": "Compile CanJS Mustache and EJS views for lightning fast production apps",
   "version": "0.10.2",
-  "homepage": "http://daffl.github.com/can-compile",
+  "homepage": "http://canjs.github.io/can-compile",
   "license": "MIT",
   "author": {
     "name": "David Luecke",
     "email": "daff@neyeon.com",
-    "web": "http://daffl.github.com"
+    "web": "http://daffl.github.io"
   },
   "main": "lib/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:daffl/can-compile.git"
+    "url": "git@github.com:canjs/can-compile.git"
   },
   "bin": {
     "can-compile": "./bin/can-compile"
