@@ -26,23 +26,23 @@
   ],
   "devDependencies": {
     "expect.js": ">= 0.1.2",
-    "mocha": "1.8.1",
-    "grunt": "~ 0.4.0",
-    "grunt-cli": "~0.1.9",
+    "mocha": "3.2.0",
+    "grunt": "~1.0.1",
+    "grunt-cli": "~1.2.0",
     "grunt-contrib-jshint": ">= 0.1.1",
-    "grunt-release": "~0.5.1",
+    "grunt-release": "~0.14.0",
     "grunt-simple-mocha": "~0.4.0",
     "gulp": "^3.9.0",
     "stream-assert": "^2.0.3"
   },
   "dependencies": {
-    "async": "0.1.22",
+    "async": "2.1.4",
     "can-simple-window": "^0.1.0",
-    "commander": "1.1.1",
-    "glob": "~3.2.8",
+    "commander": "2.9.0",
+    "glob": "~7.1.1",
     "gulp-util": "^3.0.7",
-    "handlebars": "~1.0.12",
-    "semver": "~4.3.1",
+    "handlebars": "~4.0.6",
+    "semver": "~5.3.0",
     "through2": "^2.0.0"
   }
 }
