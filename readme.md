@@ -1,5 +1,7 @@
 # can-compile
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/canjs/can-compile.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/canjs/can-compile.png?branch=master)](https://travis-ci.org/canjs/can-compile)
 
 NodeJS module that compiles [CanJS](http://canjs.us/) EJS and Mustache views into a single JavaScript file for lightning fast
