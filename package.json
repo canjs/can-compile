@@ -29,7 +29,7 @@
     "mocha": "3.3.0",
     "grunt": "~1.0.1",
     "grunt-cli": "~1.2.0",
-    "grunt-contrib-jshint": ">= 0.1.1",
+    "grunt-contrib-jshint": ">=2.0.0",
     "grunt-release": "~0.14.0",
     "grunt-simple-mocha": "~0.4.0",
     "gulp": "^3.9.0",
