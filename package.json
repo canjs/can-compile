@@ -38,7 +38,7 @@
   "dependencies": {
     "async": "2.4.0",
     "can-simple-window": "^0.1.0",
-    "commander": "2.9.0",
+    "commander": "3.0.0",
     "glob": "~7.1.1",
     "gulp-util": "^3.0.7",
     "handlebars": "~4.0.8",
