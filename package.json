@@ -36,7 +36,7 @@
     "stream-assert": "^2.0.3"
   },
   "dependencies": {
-    "async": "2.4.0",
+    "async": "3.2.0",
     "can-simple-window": "^0.1.0",
     "commander": "2.9.0",
     "glob": "~7.1.1",
